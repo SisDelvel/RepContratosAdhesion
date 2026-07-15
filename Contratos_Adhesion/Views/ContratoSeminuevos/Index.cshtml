@@ -1,0 +1,1317 @@
+﻿@{
+    ViewData["Title"] = "Contrato de Compraventa de Vehículo Usado";
+}
+
+<style>
+    #contratoWrapper {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .contrato-band {
+        background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+        color: #fff;
+        border-radius: 12px 12px 0 0;
+        padding: 1rem 1.5rem;
+    }
+
+        .contrato-band .contrato-title {
+            font-size: .95rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+    .sec-label {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #2563eb;
+        border-left: 3px solid #2563eb;
+        padding-left: .6rem;
+        margin: 1.4rem 0 .8rem;
+    }
+
+    .form-floating > label {
+        font-size: .78rem;
+        color: #64748b;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        font-size: .88rem;
+        border-radius: 8px;
+    }
+
+        .form-floating > .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+
+    .form-control[readonly] {
+        background-color: #f8faff;
+        color: #374151;
+        cursor: default;
+    }
+
+    .info-block {
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: .85rem 1rem;
+        margin-bottom: .75rem;
+    }
+
+        .info-block .info-block-title {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #1a3a6b;
+            margin-bottom: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+    .monto-total {
+        background: #eff6ff;
+        border: 2px solid #2563eb;
+        border-radius: 8px;
+        padding: .5rem .9rem;
+        font-size: .9rem;
+        font-weight: 700;
+        color: #1a3a6b;
+    }
+
+    .check-clausula {
+        display: flex;
+        align-items: flex-start;
+        gap: .6rem;
+        padding: .4rem .6rem;
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: .3rem;
+        font-size: .82rem;
+        color: #374151;
+        cursor: pointer;
+    }
+
+        .check-clausula input[type=checkbox] {
+            margin-top: .15rem;
+            flex-shrink: 0;
+            width: 15px;
+            height: 15px;
+            accent-color: #2563eb;
+            cursor: pointer;
+        }
+
+    .clausulas-accordion .accordion-button {
+        font-size: .83rem;
+        font-weight: 600;
+        color: #1a3a6b;
+        background: #f8faff;
+        border-radius: 8px !important;
+        padding: .7rem 1rem;
+    }
+
+        .clausulas-accordion .accordion-button:not(.collapsed) {
+            background: #eff6ff;
+            color: #2563eb;
+            box-shadow: none;
+        }
+
+    .clausulas-accordion .accordion-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px !important;
+        margin-bottom: .5rem;
+        overflow: hidden;
+    }
+
+    .clausulas-accordion .accordion-body {
+        font-size: .83rem;
+        color: #374151;
+        line-height: 1.65;
+        padding: .85rem 1rem;
+    }
+
+    .contrato-declaracion {
+        background: linear-gradient(135deg, #1a3a6b, #2563eb);
+        color: #fff;
+        font-size: .82rem;
+        font-weight: 600;
+        text-align: center;
+        padding: .85rem 1rem;
+        border-radius: 8px;
+    }
+
+    .firma-row {
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: .75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: .5rem;
+        flex-wrap: wrap;
+    }
+
+        .firma-row .firma-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .firma-row .firma-img {
+            min-width: 200px;
+            flex: 0 0 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .4rem;
+        }
+
+    .firma-preview-box {
+        width: 200px;
+        height: 80px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+        .firma-preview-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+    .firma-label-top {
+        font-size: .68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #64748b;
+    }
+
+    .garantia-opciones {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        margin-top: .3rem;
+    }
+
+        .garantia-opciones .form-check-label {
+            font-size: .83rem;
+            color: #374151;
+        }
+
+    .contrato-action-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    @@media print {
+        .contrato-action-bar {
+            display: none !important;
+        }
+
+        .contrato-band {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .clausulas-accordion .accordion-collapse {
+            display: block !important;
+        }
+    }
+</style>
+
+<!-- ══════════════════ PANEL DE BÚSQUEDA ══════════════════ -->
+<div id="busquedaPanel" style="max-width:480px;margin:6rem auto 0;">
+    <div class="card border-0 shadow-sm" style="border-radius:16px;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);color:#fff;padding:1.5rem;text-align:center;">
+            <div style="font-size:2.4rem;margin-bottom:.5rem;">🔧</div>
+            <h5 class="fw-bold mb-0">Orden de Seminuevos</h5>
+            <p class="mb-0 mt-1" style="font-size:.82rem;opacity:.85;">Ingresa el ID de orden para cargar el contrato</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="inputVentaId"
+                       placeholder="ID de Orden" autofocus
+                       onkeydown="if(event.key==='Enter') buscarVenta()">
+                <label for="inputVentaId">ID de Orden</label>
+            </div>
+            <div id="busquedaError" class="alert alert-danger d-none py-2" role="alert" style="font-size:.83rem;"></div>
+            <button class="btn btn-primary w-100 rounded-pill" onclick="buscarVenta()" id="btnBuscar">
+                <i class="bi bi-search me-2"></i>Cargar Orden
+            </button>
+            <hr class="my-3">
+            <p class="mb-2" style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;">
+                <i class="bi bi-cloud-fill me-1" style="color:#2563eb;"></i>Buscar PDF en SharePoint
+            </p>
+            <div class="input-group">
+                <input type="text" class="form-control" id="inputUniqueId"
+                       placeholder="UniqueId del archivo"
+                       style="font-size:.83rem;"
+                       onkeydown="if(event.key==='Enter') buscarPorUniqueId()">
+                <button class="btn btn-outline-primary" id="btnBuscarUniqueId" onclick="buscarPorUniqueId()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <div id="spBuscarResult" class="d-none mt-2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ CONTRATO WRAPPER ══════════════════ -->
+<div id="contratoWrapper" class="d-none">
+
+    <div class="contrato-action-bar">
+        <div>
+            <span class="badge bg-primary-subtle text-primary rounded-pill me-2" style="font-size:.72rem;">SEMINUEVOS</span>
+            <span class="fw-semibold">Compraventa de Vehículo Usado</span>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="volverBusqueda()">
+                <i class="bi bi-arrow-left me-1"></i>Cambiar orden
+            </button>
+            <button class="btn btn-success btn-sm rounded-pill" onclick="guardarContrato()">
+                <i class="bi bi-floppy-fill me-1"></i>Guardar
+            </button>
+            <button class="btn btn-primary btn-sm rounded-pill" id="btnGenerarPDF" onclick="generarPDF()">
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Generar PDF
+            </button>
+            <button class="btn btn-info btn-sm rounded-pill text-white" id="btnSubirSharePoint" onclick="abrirModalSharePoint()">
+                <i class="bi bi-cloud-upload-fill me-1"></i>Subir a SharePoint
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius:12px;overflow:hidden;">
+
+        <div class="contrato-band">
+            <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                <div style="flex:1;min-width:200px;">
+                    <div class="contrato-title mb-2">Contrato de Compraventa de Vehículo Usado</div>
+                    <p id="denominacion" class="mb-1" style="font-size:.8rem;font-weight:700;opacity:1;"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;">RFC: <span id="rfcDistribuidora"></span></p>
+                    <p id="domicilioDistribuidora" class="mb-1" style="font-size:.75rem;opacity:.85;"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;">Tel: <span id="telefonoDistribuidora"></span></p>
+                    <p id="horarioDistribuidora" class="mb-1" style="font-size:.75rem;opacity:.85;"></p>
+                    <p class="mb-0" style="font-size:.75rem;opacity:.85;"><span id="correoDistribuidoraHeader"></span></p>
+                </div>
+                <div style="flex:0 0 180px;border-left:1px solid rgba(255,255,255,.3);padding-left:1rem;">
+                    <p class="mb-1" style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.7;">Localidad</p>
+                    <p id="localidadDistribuidora" class="mb-0" style="font-size:.78rem;"></p>
+                </div>
+                <div style="min-width:200px;">
+                    <div class="form-floating mb-2">
+                        <input type="text" readonly class="form-control bg-transparent border-white border-opacity-50"
+                               id="folio" placeholder="Folio" style="color:#fff;">
+                        <label for="folio" style="color:rgba(255,255,255,.7);">Folio</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control bg-transparent border-white border-opacity-50"
+                               id="fechaOrden" placeholder="Fecha" style="color:#fff;">
+                        <label for="fechaOrden" style="color:rgba(255,255,255,.7);">Fecha</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+
+            <!-- ══════ DATOS DEL CLIENTE ══════ -->
+            <div class="sec-label">Datos del Cliente (Consumidor)</div>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="nombreCliente" placeholder="Nombre">
+                        <label>Nombre Completo</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="rfcCliente" placeholder="RFC">
+                        <label>R.F.C.</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="calleCliente" placeholder="Calle">
+                        <label>Calle</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="extCliente" placeholder="Ext.">
+                        <label>Ext.</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="intCliente" placeholder="Int.">
+                        <label>Int.</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="coloniaCliente" placeholder="Colonia">
+                        <label>Colonia</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="cpCliente" placeholder="C.P.">
+                        <label>C.P.</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="municipioCliente" placeholder="Municipio">
+                        <label>Delegación / Municipio</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="estadoCliente" placeholder="Estado">
+                        <label>Estado</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="tel" readonly class="form-control" id="telefonoCliente" placeholder="Teléfono">
+                        <label>Teléfono(s)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="email" readonly class="form-control" id="emailCliente" placeholder="Correo">
+                        <label>Correo Electrónico</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ CARACTERÍSTICAS DEL VEHÍCULO ══════ -->
+            <div class="sec-label">Características del Vehículo Usado</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="marca" placeholder="Marca">
+                        <label>Marca</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="submarca" placeholder="Submarca">
+                        <label>Submarca</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="catalogo" placeholder="Catálogo">
+                        <label>Catálogo</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="tipoVersion" placeholder="Tipo / Versión">
+                        <label>Tipo / Versión</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="color" placeholder="Color">
+                        <label>Color</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="anioModelo" placeholder="Año">
+                        <label>Año-Modelo</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="kmRecorridos" placeholder="Km">
+                        <label>Kilómetros Recorridos</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="placas" placeholder="Placas">
+                        <label>Número de Placas</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="niv" placeholder="NIV">
+                        <label>Núm. de Identificación Vehicular (NIV)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="capacidad" placeholder="Capacidad">
+                        <label>Capacidad</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="fechaEntrega" placeholder="Fecha de entrega">
+                        <label>Fecha y Hora de Entrega</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="lugarEntrega" placeholder="Lugar de entrega">
+                        <label>Lugar de Entrega del Vehículo</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ MONTO Y FORMA DE PAGO ══════ -->
+            <div class="sec-label">Monto de la Operación y Forma de Pago</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="info-block h-100">
+                        <div class="info-block-title">Desglose de la Operación</div>
+                        <div class="row g-2">
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Precio del vehículo</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="precioVehiculo" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Precio</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Equipo y accesorios adicionales</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="equipo" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Otros cargos</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="otrosCargos" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Impuesto al valor agregado</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="iva" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">IVA</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="monto-total d-flex justify-content-between align-items-center">
+                                    <span>Monto Total de la Operación</span>
+                                    <span id="montoTotalSpan"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 d-flex flex-column gap-3">
+                    <div class="info-block mb-0">
+                        <div class="info-block-title">Forma de Pago</div>
+                        <div class="row g-2">
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Condición</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="condicion" placeholder="—">
+                                    <label style="font-size:.7rem;">Condición</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Pago de contado</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="pagoContado" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Enganche / Unidad usada</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="enganche" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-block mb-0 flex-grow-1">
+                        <div class="info-block-title">Descripción Unidad Usada a Cuenta</div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaNiv" placeholder="NIV">
+                                    <label style="font-size:.7rem;">Núm. Identificación Vehicular</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaMarca" placeholder="Marca">
+                                    <label style="font-size:.7rem;">Marca</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaSubmarca" placeholder="Submarca">
+                                    <label style="font-size:.7rem;">Submarca</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaVersion" placeholder="Versión">
+                                    <label style="font-size:.7rem;">Tipo / Versión</label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaColor" placeholder="Color">
+                                    <label style="font-size:.7rem;">Color</label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaAnio" placeholder="Año">
+                                    <label style="font-size:.7rem;">Año</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="usadaValor" placeholder="Valor">
+                                    <label style="font-size:.7rem;">Valor de la Unidad</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ TEXTO DEL CONTRATO ══════ -->
+            <div class="sec-label mt-4">Texto del Contrato</div>
+
+            <p class="text-muted mb-3" style="font-size:.82rem;">
+                El Cliente y el Distribuidor, plenamente capaces de obligarse, manifiestan su voluntad de celebrar el
+                presente Contrato de Compraventa de Vehículo Usado, conforme a la Norma Oficial Mexicana NOM-122-SCFI-2010
+                y la Ley Federal de Protección al Consumidor, sujeto a las siguientes cláusulas.
+            </p>
+
+            <div class="accordion clausulas-accordion" id="acordeonContrato">
+
+                <!-- ── CLÁUSULAS 1–5 ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colC1" aria-expanded="true">
+                            <i class="bi bi-file-text me-2" style="color:#2563eb;"></i>Cláusulas 1 – 5 — Objeto, Información y Monto
+                        </button>
+                    </h2>
+                    <div id="colC1" class="accordion-collapse collapse show" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">1. Objeto del Contrato</p>
+                            <p>En virtud de este contrato (*), el Distribuidor (Proveedor) como legítimo propietario vende al Cliente (Consumidor) el vehículo usado cuyas características se detallan en este contrato, el cual recibe después de haber efectuado una revisión de forma detallada, el cual cumple con las Normas Oficiales Mexicanas vigentes aplicables en materia de seguridad y protección al medio ambiente y que conforme las disposiciones aplicables, el Distribuidor y el vehículo usado cumplen con todas las especificaciones legales y comerciales necesarias para poder realizar la presente compraventa.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">2. Información al Cliente</p>
+                            <p>Se proporcionó al cliente toda la información relativa a las restricciones que pudieran aplicar.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">3. Equipo y Accesorios</p>
+                            <p>El vehículo usado cuenta con el equipo opcional y accesorios adicionales solicitados y autorizados por el Cliente, detallados en el presente contrato.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">4. Servicios Adicionales</p>
+                            <p>Las partes manifiestan que no se hará cargo alguno por servicios adicionales a los pactados en el presente instrumento, sin previo consentimiento del cliente.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">5. Monto Total</p>
+                            <p class="mb-0">El precio total de la compraventa será cubierto en la fecha de firma del presente contrato, incluyendo, en su caso, los equipos y accesorios adicionales.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CLÁUSULAS 6–8 ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colC2" aria-expanded="false">
+                            <i class="bi bi-shield-check me-2" style="color:#2563eb;"></i>Cláusulas 6 – 8 — Estado del Vehículo, Unidad Usada a Cuenta y Garantía
+
+                        </button>
+                    </h2>
+                    <div id="colC2" class="accordion-collapse collapse" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">6. Estado del Vehículo</p>
+                            <p>El Cliente acepta que por tratarse de un vehículo usado, lo adquiere en el estado de uso en el que se encuentra, el cual le fue facilitado para su revisión de forma detallada. El vehículo cuenta con el siguiente equipo:</p>
+
+                            <div style="font-size:.82rem;margin-bottom:.4rem;"><strong>Exteriores:</strong></div>
+                            <div class="row g-1 mb-3" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtLimpiaparabrisas"><label for="chkExtLimpiaparabrisas">Limpiaparabrisas (plumas)</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtLuces"><label for="chkExtLuces">Unidades de luces</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtAntena"><label for="chkExtAntena">Antena</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtEspejosLat"><label for="chkExtEspejosLat">Espejos laterales</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtCristales"><label for="chkExtCristales">Cristales</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtTapones"><label for="chkExtTapones">Tapones de ruedas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtMolduras"><label for="chkExtMolduras">Molduras completas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtTaponGas"><label for="chkExtTaponGas">Tapón de gasolina</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkExtClaxon"><label for="chkExtClaxon">Claxon</label></div></div>
+                            </div>
+
+                            <div style="font-size:.82rem;margin-bottom:.4rem;"><strong>Interiores:</strong></div>
+                            <div class="row g-1 mb-3" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntInstrumentos"><label for="chkIntInstrumentos">Instrumentos del tablero</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntCalefaccion"><label for="chkIntCalefaccion">Calefacción</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntAire"><label for="chkIntAire">Aire acondicionado</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntRadio"><label for="chkIntRadio">Radio/Tipo</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntBocinas"><label for="chkIntBocinas">Bocinas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntEncendedor"><label for="chkIntEncendedor">Encendedor</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntEspejoRet"><label for="chkIntEspejoRet">Espejo retrovisor</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntCeniceros"><label for="chkIntCeniceros">Ceniceros</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntCinturones"><label for="chkIntCinturones">Cinturones de seguridad</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntTapetes"><label for="chkIntTapetes">Tapetes</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntManijas"><label for="chkIntManijas">Manijas y/o controles interiores</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntEquipoAd"><label for="chkIntEquipoAd">Equipo adicional</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntAccesorios"><label for="chkIntAccesorios">Accesorios</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkIntOtros"><label for="chkIntOtros">Otros</label></div></div>
+                            </div>
+
+                            <div style="font-size:.82rem;margin-bottom:.4rem;"><strong>Aspectos mecánicos:</strong></div>
+                            <div class="row g-1 mb-3" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecLlantas"><label for="chkMecLlantas">Llantas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecRuedas"><label for="chkMecRuedas">Ruedas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecRines"><label for="chkMecRines">Rines</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecEscape"><label for="chkMecEscape">Escape</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecDireccion"><label for="chkMecDireccion">Dirección</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecSuspension"><label for="chkMecSuspension">Suspensión</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecFrenos"><label for="chkMecFrenos">Frenos</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecParabrisas"><label for="chkMecParabrisas">Parabrisas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkMecCarroceria"><label for="chkMecCarroceria">Carrocería</label></div></div>
+                            </div>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">7. Unidad Usada a Cuenta</p>
+                            <p>En caso de que el Cliente entregue un vehículo usado a cuenta del precio, entrega también la documentación correspondiente, consistente en:</p>
+                            <div class="row g-1 mb-2" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7Factura"><label for="chkDoc7Factura">Factura emitida por el Distribuidor</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7Tarjeta"><label for="chkDoc7Tarjeta">Tarjeta de circulación</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7DocsOficiales"><label for="chkDoc7DocsOficiales">Documentos oficiales (legal estancia)</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7Manual"><label for="chkDoc7Manual">Manual del Usuario</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7Tenencias"><label for="chkDoc7Tenencias">Comprobante de tenencias</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7Verificacion"><label for="chkDoc7Verificacion">Verificación ambiental</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc7Multas"><label for="chkDoc7Multas">Multas y recargos</label></div></div>
+                            </div>
+                            <p style="font-size:.8rem;color:#64748b;">Los impuestos anteriores no pagados así como sus accesorios serán por cuenta y responsabilidad del Cliente. Asimismo, el Cliente manifiesta que el vehículo está libre de gravamen y no tiene problema judicial y/o administrativo alguno, por lo que en este acto libera al Distribuidor de adeudos o conflictos que por cualquier motivo pudiera generar dicho vehículo previo a la celebración del presente contrato.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">8. Garantía</p>
+                            <p>El vehículo usado se vende:</p>
+                            <div class="garantia-opciones mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="garantiaVehiculo" id="sinGarantiaRadio" value="sin">
+                                    <label class="form-check-label" for="sinGarantiaRadio">Sin garantía</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="garantiaVehiculo" id="conGarantiaRadio" value="con">
+                                    <label class="form-check-label" for="conGarantiaRadio">Con garantía (90 días naturales, Art. 77 LFPC)</label>
+                                </div>
+                            </div>
+                            <p style="font-size:.8rem;color:#64748b;">
+                                <strong>Sin garantía:</strong> el proveedor no está obligado a realizar ningún tipo de reparación, por lo que el Cliente asumirá los costos por reparaciones, suministro de refacciones, mano de obra calificadas, entre otros.<br><br>
+                                <strong>Con garantía:</strong> la garantía no podrá ser inferior a 90 días naturales a partir de la entrega del vehículo usado, excluyéndose la correspondiente a partes eléctricas y deberá hacerse válida en el domicilio, teléfonos y horarios de atención señalados en el rubro del presente contrato, siempre y cuando no se haya efectuado una reparación por un tercero. Asimismo, el Distribuidor será el responsable por las descomposturas, daños o pérdidas parciales o totales imputables a él, mientras el vehículo se encuentre bajo su responsabilidad para llevar a cabo el cumplimiento de la garantía.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CLÁUSULAS 9–14 ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colC3" aria-expanded="false">
+                            <i class="bi bi-exclamation-triangle me-2" style="color:#2563eb;"></i>Cláusulas 9 – 14 — Atención al Cliente, Documentos, Rescisión y Datos Personales
+                        </button>
+                    </h2>
+                    <div id="colC3" class="accordion-collapse collapse" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">9. Atención al Cliente</p>
+                            <p>El Distribuidor cuenta con personal capacitado y responsable para atender dudas, aclaraciones, reclamaciones y servicios de orientación de manera gratuita en el domicilio, teléfonos y horarios de atención señalados en el rubro del presente contrato.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">10. Entrega de Documentos</p>
+                            <p>El Distribuidor entrega junto con el vehículo usado los siguientes documentos:</p>
+                            <div class="row g-1 mb-2" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10Factura"><label for="chkDoc10Factura">Factura emitida por el Distribuidor</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10DocsOficiales"><label for="chkDoc10DocsOficiales">Documentos oficiales (legal estancia)</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10Constancia"><label for="chkDoc10Constancia">Constancia de cambio de propietario</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10Tenencias"><label for="chkDoc10Tenencias">Comprobante de tenencias</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10Verificacion"><label for="chkDoc10Verificacion">Verificación ambiental</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10Multas"><label for="chkDoc10Multas">Multas y recargos</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkDoc10Manual"><label for="chkDoc10Manual">Manual del Usuario</label></div></div>
+                            </div>
+                            <p style="font-size:.8rem;color:#64748b;">Los trámites y gastos de trámite de "cambio de propietario", serán por cuenta del Cliente. El Cliente recibe el vehículo usado descrito en el presente contrato, por lo que en este acto libera al Distribuidor de adeudos o conflictos que por cualquier motivo pudiera generar dicho vehículo a partir de la fecha de su entrega.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">11. Revocación del Consentimiento</p>
+                            <p>El cliente podrá revocar su consentimiento en un plazo de 5 días hábiles mediante aviso personal, correo electrónico o correo certificado, siempre y cuando no le haya sido entregado el vehículo materia del presente contrato.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">12. Causas de Rescisión</p>
+                            <p>Son causas de rescisión: (i) Que el Distribuidor incumpla con la entrega del vehículo en las condiciones pactadas por causas imputables a él. El Distribuidor devolverá las cantidades recibidas del Cliente en un plazo no mayor de 5 días hábiles a partir de la notificación, más una pena convencional equivalente al 1% del precio total de venta del vehículo, incluido el IVA.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">13. Jurisdicción</p>
+                            <p>Las partes están de acuerdo en someterse a la competencia de la Procuraduría Federal del Consumidor en la vía administrativa para resolver cualquier controversia, conforme a la Ley Federal de Protección al Consumidor y la NOM-122-SCFI-2010, sin perjuicio de los Tribunales competentes del domicilio del Distribuidor.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">14. Datos Personales</p>
+                            <p class="mb-0">El Distribuidor se obliga a no ceder o transmitir a terceros, con fines mercadotécnicos o publicitarios, los datos e información proporcionada por el cliente con motivo del presente contrato, salvo autorización expresa del cliente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CLÁUSULAS 15–17 ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colC4" aria-expanded="false">
+                            <i class="bi bi-pen me-2" style="color:#2563eb;"></i>Cláusulas 15 – 17 — Aceptación, Firmas Electrónicas y PROFECO
+                        </button>
+                    </h2>
+                    <div id="colC4" class="accordion-collapse collapse" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">15. Aceptación</p>
+                            <p>El Cliente y el Distribuidor aceptan la realización de la presente compraventa en los términos establecidos en este contrato, y sabedores de su contenido legal, lo firman por duplicado.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">16. Consentimiento por Medios Electrónicos</p>
+                            <p>Las partes acuerdan que en lugar de una firma original autógrafa, este contrato y cualquier consentimiento u otros documentos relacionados podrán ser firmados mediante firmas electrónicas, digitales, numéricas, alfanuméricas, huellas de voz, biométricas o de cualquier otro tipo, con la misma fuerza y consecuencia que la firma autógrafa original física, conforme a la NOM-151-SCFI-2016.</p>
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">17. Registro PROFECO</p>
+                            <p class="mb-0">(*) El presente contrato fue registrado en la Procuraduría Federal del Consumidor bajo el número 9827-2023 de fecha 24 de noviembre de 2023. Cualquier variación del presente contrato en perjuicio del cliente, frente al contrato de adhesión registrado, se tendrá por no puesta.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════ BANNER ══════ -->
+            <div class="contrato-declaracion my-4">
+                El Cliente y el Distribuidor aceptan la realización de la presente compraventa, en los términos establecidos
+                en este contrato, y sabedores de su alcance legal, lo firman por duplicado.
+            </div>
+
+            <!-- ══════ FIRMAS ══════ -->
+            <div class="sec-label">Firmas</div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <p style="font-size:.72rem;font-weight:700;color:#1a3a6b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">El Distribuidor</p>
+                    <div class="firma-row">
+                        <div class="firma-input">
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control" id="firmaDistribuidorNombre" placeholder="Distribuidor">
+                                <label>Denominación / Nombre</label>
+                            </div>
+                        </div>
+                        <div class="firma-img">
+                            <span class="firma-label-top">Firma</span>
+                            <div class="firma-preview-box">
+                                <img id="imgFirmaDistribuidor" src="" alt="Firma Distribuidor"
+                                     style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                                <span id="firmaDistPlaceholder" style="font-size:.72rem;color:#94a3b8;">Sin firma capturada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <p style="font-size:.72rem;font-weight:700;color:#1a3a6b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">El Cliente</p>
+                    <div class="firma-row">
+                        <div class="firma-input">
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control" id="firmaClienteNombre" placeholder="Cliente">
+                                <label>Nombre Completo</label>
+                            </div>
+                        </div>
+                        <div class="firma-img">
+                            <span class="firma-label-top">Firma</span>
+                            <div class="firma-preview-box">
+                                <img id="imgFirmaCliente" src="" alt="Firma Cliente"
+                                     style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                                <span id="firmaCliPlaceholder" style="font-size:.72rem;color:#94a3b8;">Sin firma capturada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-block mt-3" style="background:#fff8e1;border-color:#fde68a;">
+                <div class="info-block-title" style="color:#92400e;">📌 Nota</div>
+                <p class="mb-0" style="font-size:.82rem;color:#78350f;">
+                    (*) El presente contrato fue registrado en la Procuraduría Federal del Consumidor bajo el número
+                    9827-2023 de fecha 24 de noviembre de 2023. Cualquier variación del presente contrato en perjuicio
+                    del cliente, frente al contrato de adhesión registrado, se tendrá por no puesta.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ MODAL SHAREPOINT ══════════════════ -->
+<div class="modal fade" id="modalSharePoint" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header"
+                 style="background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);color:#fff;border-radius:.375rem .375rem 0 0;">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-cloud-fill me-2"></i>SharePoint — Contrato PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="sec-label mt-0">Subir PDF generado</p>
+                <p style="font-size:.82rem;color:#64748b;">Se guardará en <code>Contratos/Seminuevos/</code>.</p>
+                <button class="btn btn-primary rounded-pill w-100 mb-1" id="btnSubirPDFModal" onclick="subirPDF()">
+                    <i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF
+                </button>
+                <div id="spUploadResult" class="d-none mt-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let ventaIdActual       = null;
+    let _sharePointUniqueId = null;
+
+    const constantesSharePoint = { DRIVE_ID: '', ACCESS_TOKEN: '' };
+
+    const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val != null && val !== '') el.value = val;
+    };
+    const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val != null && val !== '') el.textContent = val;
+    };
+    const chkSet = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = !!val;
+    };
+
+
+    /* ── Llenar campos ───────────────────────────────── */
+    function llenarCampos(dto) {
+        document.querySelectorAll('#contratoWrapper input[readonly]').forEach(el => { el.value = ''; });
+
+        setText('denominacion',              dto.denominacion);
+        setText('rfcDistribuidora',          dto.rfc);
+        setText('domicilioDistribuidora',    dto.domicilio);
+        setText('telefonoDistribuidora',     dto.telefono);
+        setText('horarioDistribuidora',      dto.horarioAtencion);
+        setText('localidadDistribuidora',    dto.localidad);
+        setText('correoDistribuidoraHeader', dto.correoDistribuidora || 'atencionclientes@toyotaqueretaro.mx');
+
+        set('folio',      dto.folio);
+        set('fechaOrden', dto.fecha);
+
+        set('nombreCliente',    dto.nombreCliente);
+        set('rfcCliente',       dto.rfcCliente);
+        set('calleCliente',     dto.calle);
+        set('extCliente',       dto.numExt);
+        set('intCliente',       dto.numInt);
+        set('coloniaCliente',   dto.colonia);
+        set('cpCliente',        dto.codigoPostal);
+        set('municipioCliente', dto.delegacion);
+        set('estadoCliente',    dto.estado);
+        set('telefonoCliente',  dto.telefonos);
+        set('emailCliente',     dto.correo);
+
+        set('marca',        dto.marca);
+        set('submarca',     dto.submarca);
+        set('catalogo',     dto.catalogo);
+        set('tipoVersion',  dto.tipoVersion);
+        set('color',        dto.color);
+        set('anioModelo',   dto.anioModelo);
+        set('kmRecorridos', dto.kmRecorridos);
+        set('placas',       dto.placas);
+        set('niv',          dto.niv);
+        set('capacidad',    dto.capacidad);
+        set('fechaEntrega', dto.fechaEntrega);
+        set('lugarEntrega', dto.lugarEntrega);
+
+        set('precioVehiculo', dto.precioVehiculo);
+        set('equipo',         dto.equipo);
+        set('otrosCargos',    dto.otrosCargos);
+        set('iva',            dto.iva);
+        const spanMonto = document.getElementById('montoTotalSpan');
+        if (spanMonto && dto.montoTotal) spanMonto.textContent = dto.montoTotal;
+
+        set('condicion',   dto.condicion);
+        set('pagoContado', dto.pagoContado);
+        set('enganche',    dto.enganche || '$0.00');
+
+        set('usadaNiv',      dto.usadaNiv);
+        set('usadaMarca',    dto.usadaMarca);
+        set('usadaSubmarca', dto.usadaSubmarca);
+        set('usadaVersion',  dto.usadaVersion);
+        set('usadaColor',    dto.usadaColor);
+        set('usadaAnio',     dto.usadaAnio);
+        set('usadaValor',    dto.usadaValor);
+
+        set('firmaDistribuidorNombre', dto.denominacion);
+        set('firmaClienteNombre',      dto.nombreCliente);
+
+        // Exteriores
+        chkSet('chkExtLimpiaparabrisas', dto.extLimpiaparabrisas);
+        chkSet('chkExtLuces',            dto.extLuces);
+        chkSet('chkExtAntena',           dto.extAntena);
+        chkSet('chkExtEspejosLat',       dto.extEspejosLat);
+        chkSet('chkExtCristales',        dto.extCristales);
+        chkSet('chkExtTapones',          dto.extTapones);
+        chkSet('chkExtMolduras',         dto.extMolduras);
+        chkSet('chkExtTaponGas',         dto.extTaponGas);
+        chkSet('chkExtClaxon',           dto.extClaxon);
+        // Interiores
+        chkSet('chkIntInstrumentos', dto.intInstrumentos);
+        chkSet('chkIntCalefaccion',  dto.intCalefaccion);
+        chkSet('chkIntAire',         dto.intAire);
+        chkSet('chkIntRadio',        dto.intRadio);
+        chkSet('chkIntBocinas',      dto.intBocinas);
+        chkSet('chkIntEncendedor',   dto.intEncendedor);
+        chkSet('chkIntEspejoRet',    dto.intEspejoRet);
+        chkSet('chkIntCeniceros',    dto.intCeniceros);
+        chkSet('chkIntCinturones',   dto.intCinturones);
+        chkSet('chkIntTapetes',      dto.intTapetes);
+        chkSet('chkIntManijas',      dto.intManijas);
+        chkSet('chkIntEquipoAd',     dto.intEquipoAd);
+        chkSet('chkIntAccesorios',   dto.intAccesorios);
+        chkSet('chkIntOtros',        dto.intOtros);
+        // Mecánicos
+        chkSet('chkMecLlantas',    dto.mecLlantas);
+        chkSet('chkMecRuedas',     dto.mecRuedas);
+        chkSet('chkMecRines',      dto.mecRines);
+        chkSet('chkMecEscape',     dto.mecEscape);
+        chkSet('chkMecDireccion',  dto.mecDireccion);
+        chkSet('chkMecSuspension', dto.mecSuspension);
+        chkSet('chkMecFrenos',     dto.mecFrenos);
+        chkSet('chkMecParabrisas', dto.mecParabrisas);
+        chkSet('chkMecCarroceria', dto.mecCarroceria);
+        // Garantía
+        if (dto.sinGarantia) document.getElementById('sinGarantiaRadio').checked = true;
+        else if (dto.conGarantia) document.getElementById('conGarantiaRadio').checked = true;
+        // Docs art. 7
+        chkSet('chkDoc7Factura',       dto.doc7Factura);
+        chkSet('chkDoc7Tarjeta',       dto.doc7Tarjeta);
+        chkSet('chkDoc7DocsOficiales', dto.doc7DocsOficiales);
+        chkSet('chkDoc7Manual',        dto.doc7Manual);
+        chkSet('chkDoc7Tenencias',     dto.doc7Tenencias);
+        chkSet('chkDoc7Verificacion',  dto.doc7Verificacion);
+        chkSet('chkDoc7Multas',        dto.doc7Multas);
+        // Docs art. 10
+        chkSet('chkDoc10Factura',       dto.doc10Factura);
+        chkSet('chkDoc10DocsOficiales', dto.doc10DocsOficiales);
+        chkSet('chkDoc10Constancia',    dto.doc10Constancia);
+        chkSet('chkDoc10Tenencias',     dto.doc10Tenencias);
+        chkSet('chkDoc10Verificacion',  dto.doc10Verificacion);
+        chkSet('chkDoc10Multas',        dto.doc10Multas);
+        chkSet('chkDoc10Manual',        dto.doc10Manual);
+
+        // Firmas
+        const cargarImg = (imgId, phId, base64) => {
+            const img = document.getElementById(imgId);
+            const ph  = document.getElementById(phId);
+            if (img && base64) {
+                img.src = base64;
+                img.style.display = 'block';
+                if (ph) ph.style.display = 'none';
+            }
+        };
+        cargarImg('imgFirmaDistribuidor', 'firmaDistPlaceholder', dto.firmaDistribuidor);
+        cargarImg('imgFirmaCliente',      'firmaCliPlaceholder',  dto.firmaCliente);
+
+        _sharePointUniqueId = dto.sharePointUniqueId ?? null;
+    }
+
+
+    /* ── Búsqueda ────────────────────────────────────── */
+    async function buscarVenta() {
+        const ventaId = document.getElementById('inputVentaId').value.trim();
+        if (!ventaId) return mostrarError('Ingresa un ID de orden.');
+
+        const btn   = document.getElementById('btnBuscar');
+        const errEl = document.getElementById('busquedaError');
+        errEl.classList.add('d-none');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
+
+        try {
+            const res = await fetch(
+                `/ContratoSeminuevos/ObtenerDatosContrato?ventaId=${encodeURIComponent(ventaId)}`,
+                { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+            );
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.mensaje || `Error al obtener los datos (${res.status}).`);
+            }
+
+            const dto = await res.json();
+            ventaIdActual = ventaId;
+            document.getElementById('busquedaPanel').classList.add('d-none');
+            document.getElementById('contratoWrapper').classList.remove('d-none');
+            llenarCampos(dto);
+
+        } catch (e) {
+            mostrarError(e.message || 'Error inesperado.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search me-2"></i>Cargar Orden';
+        }
+    }
+
+    /* ── Guardar ─────────────────────────────────────── */
+    async function guardarContrato() {
+        if (!ventaIdActual) return false;
+
+        const getImgSrc = (id) => {
+            const img = document.getElementById(id);
+            return img && img.src && img.src !== window.location.href ? img.src : null;
+        };
+        const chk = (id) => document.getElementById(id)?.checked ?? false;
+
+        const payload = {
+            idVenta:             parseInt(ventaIdActual),
+            fechaEntrega:        document.getElementById('fechaEntrega')?.value || null,
+            correoDistribuidora: 'atencionclientes@toyotaqueretaro.mx',
+            sharePointUniqueId:  _sharePointUniqueId,
+            // Exteriores
+            extLimpiaparabrisas: chk('chkExtLimpiaparabrisas'),
+            extLuces:            chk('chkExtLuces'),
+            extAntena:           chk('chkExtAntena'),
+            extEspejosLat:       chk('chkExtEspejosLat'),
+            extCristales:        chk('chkExtCristales'),
+            extTapones:          chk('chkExtTapones'),
+            extMolduras:         chk('chkExtMolduras'),
+            extTaponGas:         chk('chkExtTaponGas'),
+            extClaxon:           chk('chkExtClaxon'),
+            // Interiores
+            intInstrumentos: chk('chkIntInstrumentos'),
+            intCalefaccion:  chk('chkIntCalefaccion'),
+            intAire:         chk('chkIntAire'),
+            intRadio:        chk('chkIntRadio'),
+            intBocinas:      chk('chkIntBocinas'),
+            intEncendedor:   chk('chkIntEncendedor'),
+            intEspejoRet:    chk('chkIntEspejoRet'),
+            intCeniceros:    chk('chkIntCeniceros'),
+            intCinturones:   chk('chkIntCinturones'),
+            intTapetes:      chk('chkIntTapetes'),
+            intManijas:      chk('chkIntManijas'),
+            intEquipoAd:     chk('chkIntEquipoAd'),
+            intAccesorios:   chk('chkIntAccesorios'),
+            intOtros:        chk('chkIntOtros'),
+            // Mecánicos
+            mecLlantas:    chk('chkMecLlantas'),
+            mecRuedas:     chk('chkMecRuedas'),
+            mecRines:      chk('chkMecRines'),
+            mecEscape:     chk('chkMecEscape'),
+            mecDireccion:  chk('chkMecDireccion'),
+            mecSuspension: chk('chkMecSuspension'),
+            mecFrenos:     chk('chkMecFrenos'),
+            mecParabrisas: chk('chkMecParabrisas'),
+            mecCarroceria: chk('chkMecCarroceria'),
+            // Garantía
+            sinGarantia: chk('sinGarantiaRadio'),
+            conGarantia: chk('conGarantiaRadio'),
+            // Docs art. 7
+            doc7Factura:       chk('chkDoc7Factura'),
+            doc7Tarjeta:       chk('chkDoc7Tarjeta'),
+            doc7DocsOficiales: chk('chkDoc7DocsOficiales'),
+            doc7Manual:        chk('chkDoc7Manual'),
+            doc7Tenencias:     chk('chkDoc7Tenencias'),
+            doc7Verificacion:  chk('chkDoc7Verificacion'),
+            doc7Multas:        chk('chkDoc7Multas'),
+            // Docs art. 10
+            doc10Factura:       chk('chkDoc10Factura'),
+            doc10DocsOficiales: chk('chkDoc10DocsOficiales'),
+            doc10Constancia:    chk('chkDoc10Constancia'),
+            doc10Tenencias:     chk('chkDoc10Tenencias'),
+            doc10Verificacion:  chk('chkDoc10Verificacion'),
+            doc10Multas:        chk('chkDoc10Multas'),
+            doc10Manual:        chk('chkDoc10Manual'),
+            // Firmas
+            firmaDistribuidor: getImgSrc('imgFirmaDistribuidor'),
+            firmaCliente:      getImgSrc('imgFirmaCliente'),
+        };
+
+        const btn = document.querySelector('button[onclick="guardarContrato()"]');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
+
+        try {
+            const res = await fetch('/ContratoSeminuevos/GuardarContrato', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error(`Error al guardar (${res.status}).`);
+
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Guardado';
+            btn.classList.replace('btn-success', 'btn-outline-success');
+            return true;
+
+        } catch (e) {
+            alert(e.message || 'Error inesperado al guardar.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i>Guardar';
+            return false;
+        }
+    }
+
+    /* ── PDF ─────────────────────────────────────────── */
+    async function generarPDF() {
+        if (!ventaIdActual) return;
+        await guardarContrato();
+        const btn = document.getElementById('btnGenerarPDF');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Generando...';
+        window.open(`/ContratoSeminuevos/GenerarPDFContrato?ventaId=${encodeURIComponent(ventaIdActual)}`, '_blank');
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-file-earmark-pdf-fill me-1"></i>Generar PDF';
+        }, 2000);
+    }
+
+    /* ── SharePoint ──────────────────────────────────── */
+    function abrirModalSharePoint() {
+        document.getElementById('spUploadResult').className = 'd-none mt-2';
+        document.getElementById('spUploadResult').innerHTML = '';
+        const btn = document.getElementById('btnSubirPDFModal');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF';
+        new bootstrap.Modal(document.getElementById('modalSharePoint')).show();
+    }
+
+    async function subirPDF() {
+        if (!ventaIdActual) return;
+        const btn      = document.getElementById('btnSubirPDFModal');
+        const resultEl = document.getElementById('spUploadResult');
+
+        const guardado = await guardarContrato();
+        if (!guardado) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Subiendo...';
+        resultEl.className = 'd-none mt-2';
+
+        try {
+            const credentials = await sharePointService.generateAccessToken();
+            constantesSharePoint.ACCESS_TOKEN = credentials.access_token;
+            constantesSharePoint.DRIVE_ID     = credentials.driveId;
+
+            const res = await fetch(`/ContratoSeminuevos/GenerarPDFContrato?ventaId=${encodeURIComponent(ventaIdActual)}`);
+            if (!res.ok) throw new Error(`Error al generar el PDF (${res.status})`);
+            const blob = await res.blob();
+
+            const file = new File([blob], `ContratoSeminuevos_${ventaIdActual}_${Date.now()}.pdf`, { type: 'application/pdf' });
+            const resultado = await sharePointService.uploadFile(file, 'Contratos/Seminuevos');
+
+            _sharePointUniqueId = resultado.uniqueId;
+            await guardarContrato();
+
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `
+                <div class="alert alert-success py-2 mb-0" style="font-size:.82rem;">
+                    <div class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-1"></i>PDF subido correctamente</div>
+                    <div class="mb-1"><span class="text-muted">UniqueId:</span> <code class="user-select-all">${resultado.uniqueId}</code></div>
+                    <a href="${resultado.url}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill mt-1">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF
+                    </a>
+                </div>`;
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Subido';
+
+        } catch (e) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size:.82rem;">${e.message || 'Error inesperado.'}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF';
+        }
+    }
+
+    async function buscarPorUniqueId() {
+        const uniqueId = document.getElementById('inputUniqueId').value.trim();
+        const resultEl = document.getElementById('spBuscarResult');
+        const btn      = document.getElementById('btnBuscarUniqueId');
+
+        if (!uniqueId) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-warning py-2 mb-0" style="font-size:.82rem;">Ingresa un UniqueId.</div>`;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        resultEl.className = 'd-none mt-2';
+
+        try {
+            if (!constantesSharePoint.ACCESS_TOKEN || !constantesSharePoint.DRIVE_ID) {
+                const credentials = await sharePointService.generateAccessToken();
+                constantesSharePoint.ACCESS_TOKEN = credentials.access_token;
+                constantesSharePoint.DRIVE_ID     = credentials.driveId;
+            }
+
+            const res = await fetch(
+                `https://graph.microsoft.com/v1.0/drives/${constantesSharePoint.DRIVE_ID}/items/${uniqueId}`,
+                { headers: { 'Authorization': `Bearer ${constantesSharePoint.ACCESS_TOKEN}` } }
+            );
+            if (!res.ok) throw new Error('No encontrado');
+            const data = await res.json();
+            const url  = data['@@microsoft.graph.downloadUrl'];
+
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `
+                <div class="alert alert-success py-2 mb-0" style="font-size:.82rem;">
+                    <div class="fw-bold mb-1"><i class="bi bi-file-earmark-pdf-fill me-1"></i>Archivo encontrado</div>
+                    <div class="text-truncate mb-1"><span class="text-muted">Nombre:</span> ${data.name ?? '—'}</div>
+                    <a href="${url}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill mt-1">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF
+                    </a>
+                </div>`;
+        } catch (e) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size:.82rem;">No se encontró el archivo o el UniqueId es inválido.</div>`;
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search"></i>';
+        }
+    }
+
+    /* ── Navegación ──────────────────────────────────── */
+    function volverBusqueda() {
+        document.getElementById('contratoWrapper').classList.add('d-none');
+        document.getElementById('busquedaPanel').classList.remove('d-none');
+        document.getElementById('inputVentaId').value = '';
+        document.getElementById('busquedaError').classList.add('d-none');
+        _sharePointUniqueId = null;
+    }
+
+    function mostrarError(msg) {
+        const el = document.getElementById('busquedaError');
+        el.textContent = msg;
+        el.classList.remove('d-none');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const ventaId = params.get('ventaId');
+        if (ventaId) {
+            document.getElementById('inputVentaId').value = ventaId;
+            buscarVenta();
+        }
+    });
+</script>
+
+<script src="~/js/librerias/sharepoint.js"></script>
+<script src="~/js/helpers/utils.js"></script>
+<script src="~/js/signature/signature_pad.umd.min.js"></script>
+

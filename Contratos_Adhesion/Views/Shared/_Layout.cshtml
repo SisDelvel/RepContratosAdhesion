@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Grupo Geisha</title>
+
+    @* Librerías base *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @* Iconos de Bootstrap para el diseño *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Aplicar imagen de fondo a toda la página */
+        body {
+            background-image: url('/imagenes/fondo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        /* Estilo para el Header Azul (basado en la imagen proporcionada) */
+        .navbar-geisha {
+            background-color: #B8C5D9 !important; /* Azul claro/grisáceo de la imagen */
+            border-bottom: 2px solid #a3b2c7;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #2c3e50 !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            height: 40px; /* Ajuste del tamaño del logo */
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+
+        /* Contenedor principal semi-transparente opcional para legibilidad */
+        .main-content {
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-geisha mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="ConsultaMultipuntos" asp-action="Index">
+                    @* Logo a la izquierda *@
+                    <img src="~/imagenes/logoGrupo.jpeg" alt="Logo Grupo Geisha" class="logo-img" />
+                    <span>Grupo Geisha</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container main-content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* Se eliminó el footer según lo solicitado *@
+
+    @* Mantener librerías *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @* SweetAlert2 para mensajes de error estéticos *@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

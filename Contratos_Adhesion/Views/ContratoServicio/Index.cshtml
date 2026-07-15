@@ -1,0 +1,1987 @@
+﻿@{
+    ViewData["Title"] = "Orden de Servicio";
+}
+
+<style>
+    #ordenWrapper {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .orden-band {
+        background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+        color: #fff;
+        border-radius: 12px 12px 0 0;
+        padding: 1rem 1.5rem;
+    }
+
+        .orden-band .orden-title {
+            font-size: .95rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+    .sec-label {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #2563eb;
+        border-left: 3px solid #2563eb;
+        padding-left: .6rem;
+        margin: 1.4rem 0 .8rem;
+    }
+
+    .form-floating > label {
+        font-size: .78rem;
+        color: #64748b;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        font-size: .88rem;
+        border-radius: 8px;
+    }
+
+        .form-floating > .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+
+    .info-block {
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: .85rem 1rem;
+        margin-bottom: .75rem;
+    }
+
+        .info-block .info-block-title {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #1a3a6b;
+            margin-bottom: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+    .check-clausula {
+        display: flex;
+        align-items: flex-start;
+        gap: .6rem;
+        padding: .5rem .75rem;
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: .5rem;
+        font-size: .83rem;
+        color: #374151;
+    }
+
+        .check-clausula input[type=checkbox] {
+            margin-top: .15rem;
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            accent-color: #2563eb;
+        }
+
+    .inventario-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .8rem;
+    }
+
+        .inventario-table th {
+            background: #1a3a6b;
+            color: #fff;
+            padding: .35rem .5rem;
+            text-align: center;
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .inventario-table td {
+            padding: .25rem .5rem;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .inventario-table .chk-row {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .15rem 0;
+            font-size: .78rem;
+        }
+
+            .inventario-table .chk-row input[type="checkbox"] {
+                flex-shrink: 0;
+                cursor: pointer;
+            }
+
+    .coches-img {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .orden-action-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .firma-row {
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: .75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: .5rem;
+        flex-wrap: wrap;
+    }
+
+        .firma-row .firma-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .firma-row .firma-pad {
+            min-width: 200px;
+            flex: 0 0 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .4rem;
+        }
+
+    .firma-preview {
+        width: 200px;
+        height: 80px;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        cursor: pointer;
+        transition: border-color .2s;
+    }
+
+        .firma-preview:hover {
+            border-color: #2563eb;
+        }
+
+        .firma-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .firma-preview .firma-placeholder {
+            font-size: .72rem;
+            color: #94a3b8;
+            text-align: center;
+            padding: .5rem;
+        }
+
+    .firma-label-top {
+        font-size: .68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #64748b;
+    }
+
+    @@media print {
+        .orden-action-bar {
+            display: none !important;
+        }
+
+        .orden-band {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+    }
+</style>
+
+<!-- ══════════════════ PANEL DE BÚSQUEDA ══════════════════ -->
+<div id="busquedaPanel" style="max-width:480px;margin:6rem auto 0;">
+    <div class="card border-0 shadow-sm" style="border-radius:16px;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);color:#fff;padding:1.5rem;text-align:center;">
+            <div style="font-size:2.4rem;margin-bottom:.5rem;">🔧</div>
+            <h5 class="fw-bold mb-0">Orden de Servicio</h5>
+            <p class="mb-0 mt-1" style="font-size:.82rem;opacity:.85;">Ingresa el número de orden para cargar</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="inputVentaId"
+                       placeholder="ID de Servicio" autofocus
+                       autocomplete="off"
+                       onkeydown="if(event.key==='Enter') buscarOrden()">
+                <label for="inputVentaId">ID de Servicio</label>
+            </div>
+            <div id="busquedaError" class="alert alert-danger d-none py-2" role="alert" style="font-size:.83rem;"></div>
+            <button class="btn btn-primary w-100 rounded-pill" onclick="buscarOrden()" id="btnBuscar">
+                <i class="bi bi-search me-2"></i>Cargar Orden
+            </button>
+
+            <hr class="my-3">
+
+            <p class="mb-2" style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;">
+                <i class="bi bi-cloud-fill me-1" style="color:#2563eb;"></i>Buscar PDF en SharePoint
+            </p>
+            <div class="input-group">
+                <input type="text" class="form-control" id="inputUniqueId"
+                       placeholder="UniqueId del archivo"
+                       style="font-size:.83rem;"
+                       onkeydown="if(event.key==='Enter') buscarPorUniqueId()">
+                <button class="btn btn-outline-primary" id="btnBuscarUniqueId" onclick="buscarPorUniqueId()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <div id="spBuscarResult" class="d-none mt-2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ ORDEN WRAPPER ══════════════════ -->
+<div id="ordenWrapper" class="d-none">
+
+    <!-- Action bar -->
+    <div class="orden-action-bar">
+        <div>
+            <span class="badge bg-primary-subtle text-primary rounded-pill me-2" style="font-size:.72rem;">SERVICIO</span>
+            <span class="fw-semibold">Orden de Servicio / Mantenimiento</span>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="volverBusqueda()">
+                <i class="bi bi-arrow-left me-1"></i>Cambiar orden
+            </button>
+            <button class="btn btn-success btn-sm rounded-pill" onclick="guardarContrato()" id="btnGuardar">
+                <i class="bi bi-floppy-fill me-1"></i>Guardar
+            </button>
+            <button class="btn btn-primary btn-sm rounded-pill" onclick="generarPDF()">
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Generar PDF
+            </button>
+            <button class="btn btn-info btn-sm rounded-pill text-white" id="btnSubirSharePoint" onclick="abrirModalSharePoint()">
+                <i class="bi bi-cloud-upload-fill me-1"></i>Subir a SharePoint
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius:12px;overflow:hidden;">
+
+        <!-- Band header -->
+        <div class="orden-band">
+            <div class="d-flex align-items-start gap-3 flex-wrap">
+                <div style="flex:2;min-width:180px;">
+                    <p class="mb-1" style="font-size:.8rem;font-weight:700;" id="hdr_denominacion"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;" id="hdr_domicilio"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;" id="hdr_rfc"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;" id="hdr_telefono"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;" id="hdr_horario"></p>
+                    <p class="mb-0" style="font-size:.75rem;opacity:.85;" id="hdr_correo"></p>
+                </div>
+                <div style="flex:1;min-width:200px;">
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control bg-transparent border-white border-opacity-50"
+                               id="numOrden" name="numOrden" placeholder="Orden" style="color:#fff;" readonly>
+                        <label for="numOrden" style="color:rgba(255,255,255,.7);">Orden de Reparación</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control bg-transparent border-white border-opacity-50"
+                               id="fechaOrden" name="fechaOrden" placeholder="Fecha" style="color:#fff;" readonly>
+                        <label for="fechaOrden" style="color:rgba(255,255,255,.7);">Fecha</label>
+                    </div>
+                    <div style="border-left:1px solid rgba(255,255,255,.3);padding-left:.75rem;margin-top:.5rem;">
+                        <p class="mb-1" style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.7;">Localidad</p>
+                        <p class="mb-0" style="font-size:.75rem;" id="hdr_localidad"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+
+            <!-- ══════ DATOS DEL CLIENTE ══════ -->
+            <div class="sec-label">Datos del Cliente (Consumidor)</div>
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="nombreCliente" name="nombreCliente" placeholder="Nombre">
+                        <label for="nombreCliente">Nombre</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="rfcCliente" name="rfcCliente" placeholder="RFC">
+                        <label for="rfcCliente">R.F.C.</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="emailCliente" name="emailCliente" placeholder="Correo">
+                        <label for="emailCliente">Correo electrónico</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="calleCliente" name="calleCliente" placeholder="Calle">
+                        <label for="calleCliente">Calle</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="coloniaCliente" name="coloniaCliente" placeholder="Colonia">
+                        <label for="coloniaCliente">Colonia</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="municipioCliente" name="municipioCliente" placeholder="Municipio">
+                        <label for="municipioCliente">Delegación / Municipio</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="estadoCliente" name="estadoCliente" placeholder="Estado">
+                        <label for="estadoCliente">Estado</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="telefonoCliente" name="telefonoCliente" placeholder="Teléfono">
+                        <label for="telefonoCliente">Teléfono</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ CARACTERÍSTICAS DEL VEHÍCULO ══════ -->
+            <div class="sec-label">Características del Vehículo</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="marca" name="marca" placeholder="Marca">
+                                <label for="marca">Marca</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="submarca" name="submarca" placeholder="Submarca">
+                                <label for="submarca">Submarca</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="tipoVersion" name="tipoVersion" placeholder="Tipo / Versión">
+                                <label for="tipoVersion">Tipo o versión</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="color" name="color" placeholder="Color">
+                                <label for="color">Color</label>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="anioModelo" name="anioModelo" placeholder="Año">
+                                <label for="anioModelo">Año-Modelo</label>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="capacidad" name="capacidad" placeholder="Cap.">
+                                <label for="capacidad">Capacidad</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="niv" name="niv" placeholder="NIV">
+                                <label for="niv">Número Identificación Vehicular</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="kmRecorridos" name="kmRecorridos" placeholder="Km">
+                                <label for="kmRecorridos">Número de kilómetros recorridos</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="placas" name="placas" placeholder="Placas">
+                                <label for="placas">Número de Placas</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="asesor" name="asesor" placeholder="Asesor">
+                                <label for="asesor">Asesor</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="piramide" name="piramide" placeholder="Pirámide">
+                                <label for="piramide">Pirámide</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="fechaRecepcion" name="fechaRecepcion" placeholder="Recepción">
+                                <label for="fechaRecepcion">Fecha y hora de Recepción</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="fechaEntrega" name="fechaEntrega" placeholder="Entrega">
+                                <label for="fechaEntrega">Fecha y hora de Entrega</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="info-block mb-0">
+                                <div class="info-block-title">Partes y/o refacciones reemplazadas</div>
+                                <p style="font-size:.78rem;" class="mb-2">
+                                    Se entregan las partes o refacciones reemplazadas al consumidor:
+                                    <span class="ms-2">
+                                        <input class="form-check-input me-1" type="checkbox" id="chkSi"> <label for="chkSi" style="font-size:.78rem;">SI</label>
+                                        <input class="form-check-input ms-3 me-1" type="checkbox" id="chkNo"> <label for="chkNo" style="font-size:.78rem;">NO</label>
+                                    </span>
+                                </p>
+                                <p style="font-size:.78rem;" class="mb-1">NOTA: Las partes y/o refacciones NO se entregarán al consumidor cuando:</p>
+                                <div class="d-flex gap-2 flex-wrap" style="font-size:.78rem;">
+                                    <div>a) Sean cambiadas en uso de garantía</div>
+                                    <div>b) Se trate de residuos considerados peligrosos</div>
+                                </div>
+                                <p style="font-size:.78rem;" class="mt-2 mb-1">Servicio en el domicilio del consumidor:</p>
+                                <div class="d-flex gap-3" style="font-size:.78rem;">
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkDomSi"> <label for="chkDomSi">SI</label></div>
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkDomNo"> <label for="chkDomNo">NO</label></div>
+                                </div>
+                                <p style="font-size:.78rem;" class="mt-2 mb-1">Póliza de seguro para cubrir al consumidor los daños o el extravío de bienes:</p>
+                                <div class="d-flex gap-2 flex-wrap" style="font-size:.78rem;">
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkPolSi"> <label for="chkPolSi">SI</label></div>
+                                    <span>Nº:</span>
+                                    <input type="text" class="form-control form-control-sm d-inline-block" id="numPoliza" style="width:120px;">
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkPolNo"> <label for="chkPolNo">NO</label></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ OPERACIONES / REFACCIONES ══════ -->
+            <div class="sec-label">Operaciones a Efectuar y Partes y/o Refacciones</div>
+            <div class="info-block">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-0" style="font-size:.8rem;">
+                        <thead style="background:#1a3a6b;color:#fff;">
+                            <tr>
+                                <th style="width:12%;">Operaciones</th>
+                                <th>Partes y/o Refacciones</th>
+                                <th style="width:8%;">Cant.</th>
+                                <th style="width:14%;">Precios Unitarios</th>
+                                <th style="width:14%;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaOperaciones">
+                            @for (int i = 0; i < 8; i++)
+                            {
+                                <tr>
+                                    <td><input type="text" class="form-control form-control-sm border-0" placeholder=""></td>
+                                    <td><input type="text" class="form-control form-control-sm border-0" placeholder=""></td>
+                                    <td><input type="text" class="form-control form-control-sm border-0 text-center" placeholder=""></td>
+                                    <td><input type="text" class="form-control form-control-sm border-0 text-end" placeholder="$0.00"></td>
+                                    <td><input type="text" class="form-control form-control-sm border-0 text-end" placeholder="$0.00"></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold" style="font-size:.8rem;">Monto total de la operación:</td>
+                                <td><input type="text" class="form-control form-control-sm border-0 text-end fw-bold" id="montoTotal" placeholder="$0.00"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ══════ FORMA DE PAGO + SERVICIOS ADICIONALES ══════ -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="info-block h-100">
+                        <div class="info-block-title">Forma de Pago</div>
+                        <div class="row g-2">
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Monto de la operación:</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-sm" id="montoOperacion" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Otros Cargos:</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-sm" id="otrosCargos" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Servicios Adicionales:</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-sm" id="serviciosAdicionales" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Parcial:</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-sm" id="parcial" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Impuesto al Valor Agregado:</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-sm" id="iva" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">IVA</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <div style="background:#eff6ff;border:2px solid #2563eb;border-radius:8px;padding:.5rem .9rem;font-size:.9rem;font-weight:700;color:#1a3a6b;"
+                                     class="d-flex justify-content-between">
+                                    <span>Monto Total (incluye mano de obra):</span>
+                                    <span id="montoTotalPago"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <div class="d-flex gap-3 align-items-center" style="font-size:.8rem;">
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkEfectivo"> <label for="chkEfectivo">Efectivo</label></div>
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkTarjeta"> <label for="chkTarjeta">Tarjeta de crédito</label></div>
+                                    <div><input class="form-check-input me-1" type="checkbox" id="chkOtro"> <label for="chkOtro">Otro</label></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-block h-100">
+                        <div class="info-block-title">Servicios Adicionales</div>
+                        <div class="row g-2">
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Total refacciones y servicios adicionales:</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-control-sm" id="totalRefacciones" placeholder="$0.00">
+                                    <label style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2" style="font-size:.78rem;color:#374151;">
+                                <p class="mb-0">Fecha y monto de anticipo:</p>
+                                <div class="form-floating mt-1">
+                                    <input type="text" class="form-control form-control-sm" id="anticipo" placeholder="Anticipo">
+                                    <label style="font-size:.7rem;">Fecha y monto</label>
+                                </div>
+                                <p class="mt-2 mb-0">El resto del monto total de la operación, se liquidará en la fecha señalada para la entrega del vehículo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ CONDICIONES DEL CONTRATO ══════ -->
+            <div class="sec-label mt-4">Condiciones del Contrato</div>
+
+            <div class="accordion clausulas-accordion" id="acordeonCondiciones">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colCond1" aria-expanded="true">
+                            <i class="bi bi-list-ol me-2" style="color:#2563eb;"></i> Condiciones 1 — 7
+                        </button>
+                    </h2>
+                    <div id="colCond1" class="accordion-collapse collapse show" data-bs-parent="#acordeonCondiciones">
+                        <div class="accordion-body">
+                            <p><strong>1.</strong> En virtud de este contrato (*), el Distribuidor presta el servicio de reparación y/o mantenimiento al Cliente (Consumidor), del vehículo cuyas características se detallan en este contrato.</p>
+                            <p><strong>2.</strong> El Cliente expresa ser el dueño del vehículo y/o estar facultado para autorizar la reparación y/o mantenimiento del vehículo descrito en el presente contrato, por lo que acepta las condiciones y términos bajo los cuales se realizará la prestación del servicio descrita en el presente contrato. Asimismo, es sabedor de las posibles consecuencias que puede sufrir el vehículo con motivo de su reparación y/o mantenimiento y se responsabiliza de las mismas. El consumidor acepta haber tenido a la vista los precios por mano de obra, refacciones y/o reparaciones a emplear en las operaciones a efectuar por parte del Distribuidor.</p>
+                            <p><strong>3.</strong> El precio total por concepto de la prestación del servicio de reparación y/o mantenimiento será cubierto en las instalaciones del Distribuidor y en moneda nacional en la forma y términos expresados en este contrato, incluyendo, en su caso, las partes y/o refacciones y los servicios adicionales que el cliente haya aceptado previamente.</p>
+                            <p><strong>4.</strong> En la situación de que el Cliente solicite, o en su caso, el Distribuidor avise al Cliente de servicios adicionales a los establecidos en el presente contrato, éste último los podrá autorizar vía telefónica. Asimismo, todas las quejas y sugerencias serán atendidas en el domicilio, teléfonos y horarios de atención señalados en el catálogo o anverso del presente contrato.</p>
+                            <p><strong>5.</strong> Las condiciones generales del vehículo materia de reparación y/o mantenimiento, son las siguientes:</p>
+                            <div style="font-size:.82rem;margin-bottom:.4rem;"><strong>Exteriores:</strong></div>
+                            <div class="row g-1 mb-2" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtLimpiaparabrisas" name="c5ExtLimpiaparabrisas"><label for="chkC5ExtLimpiaparabrisas">Limpiaparabrisas (plumas)</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtLuces" name="c5ExtLuces"><label for="chkC5ExtLuces">Unidades de luces</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtAntena" name="c5ExtAntena"><label for="chkC5ExtAntena">Antena</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtEspejos" name="c5ExtEspejos"><label for="chkC5ExtEspejos">Espejos laterales</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtCristales" name="c5ExtCristales"><label for="chkC5ExtCristales">Cristales</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtTapones" name="c5ExtTapones"><label for="chkC5ExtTapones">Tapones de ruedas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtMolduras" name="c5ExtMolduras"><label for="chkC5ExtMolduras">Molduras completas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtTaponGas" name="c5ExtTaponGas"><label for="chkC5ExtTaponGas">Tapón de gasolina</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5ExtClaxon" name="c5ExtClaxon"><label for="chkC5ExtClaxon">Claxon</label></div></div>
+                            </div>
+                            <div style="font-size:.82rem;margin-bottom:.4rem;"><strong>Interiores:</strong></div>
+                            <div class="row g-1 mb-2" style="font-size:.82rem;">
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntInstrumentos" name="c5IntInstrumentos"><label for="chkC5IntInstrumentos">Instrumentos del tablero</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntCalefaccion" name="c5IntCalefaccion"><label for="chkC5IntCalefaccion">Calefacción</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntAire" name="c5IntAire"><label for="chkC5IntAire">Aire acondicionado</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntRadio" name="c5IntRadio"><label for="chkC5IntRadio">Radio/Tipo</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntBocinas" name="c5IntBocinas"><label for="chkC5IntBocinas">Bocinas</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntEncendedor" name="c5IntEncendedor"><label for="chkC5IntEncendedor">Encendedor</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntEspejoRet" name="c5IntEspejoRet"><label for="chkC5IntEspejoRet">Espejo retrovisor</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntCeniceros" name="c5IntCeniceros"><label for="chkC5IntCeniceros">Ceniceros</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntCinturones" name="c5IntCinturones"><label for="chkC5IntCinturones">Cinturones de seguridad</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntTapetes" name="c5IntTapetes"><label for="chkC5IntTapetes">Tapetes</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntManijas" name="c5IntManijas"><label for="chkC5IntManijas">Manijas y/o controles interiores</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntEquipoAd" name="c5IntEquipoAd"><label for="chkC5IntEquipoAd">Equipo adicional</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntAccesorios" name="c5IntAccesorios"><label for="chkC5IntAccesorios">Accesorios</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntAditamentos" name="c5IntAditamentos"><label for="chkC5IntAditamentos">Aditamentos especiales</label></div></div>
+                                <div class="col-6 col-md-4"><div class="check-clausula"><input type="checkbox" id="chkC5IntOtros" name="c5IntOtros"><label for="chkC5IntOtros">Otros</label></div></div>
+                            </div>
+                            <p style="font-size:.82rem;margin-bottom:.2rem;">El vehículo se encuentra en las siguientes condiciones generales: Aspectos mecánicos: DESCRITOS EN LA HOJA DE INVENTARIO Y CONDICIONES DE LA UNIDAD, Aspectos de carrocería DESCRITOS EN LA HOJA DE INVENTARIO Y CONDICIONES DE LA UNIDAD.</p>
+                            <p><strong>6.</strong> La prestación del servicio de reparación y/o mantenimiento del vehículo materia de este contrato, se otorga:</p>
+                            <div class="check-clausula">
+                                <input type="checkbox" id="chkSinGarantia" name="sinGarantia">
+                                <label for="chkSinGarantia"><strong>Sin garantía.</strong></label>
+                            </div>
+                            <div class="check-clausula">
+                                <input type="checkbox" id="chkConGarantia" name="conGarantia">
+                                <label for="chkConGarantia"><strong>Con garantía por un plazo de 90 días.</strong> (Art. 77 de la LFPC* no podrá ser inferior a 90 días) contados a partir de la entrega del vehículo.</label>
+                            </div>
+                            <p class="mb-0"><strong>7.</strong> El Distribuidor será el responsable por las descomposturas, daños o pérdidas parciales o totales imputables a él, mientras el vehículo se encuentre bajo su resguardo para llevar a cabo la prestación del servicio de reparación y/o mantenimiento.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colCond2" aria-expanded="false">
+                            <i class="bi bi-list-ol me-2" style="color:#2563eb;"></i> Condiciones 8 — 14
+                        </button>
+                    </h2>
+                    <div id="colCond2" class="accordion-collapse collapse" data-bs-parent="#acordeonCondiciones">
+                        <div class="accordion-body">
+                            <p><strong>8.</strong> El cliente podrá revocar su consentimiento, en un plazo de 5 días hábiles mediante aviso personal, correo electrónico o correo certificado, siempre y cuando no se hayan iniciado los trabajos de reparación y/o mantenimiento.</p>
+                            <p><strong>9.</strong> Las causas que autoricen una cancelación se darán a conocer al cliente.</p>
+                            <p><strong>10.</strong> En caso de que el consumidor cancele la operación, está obligado a pagar de manera inmediata y previa a la entrega del vehículo, el importe de las operaciones efectuadas y partes y/o refacciones colocadas o adquiridas hasta el retiro del mismo.</p>
+                            <p><strong>11.</strong> Son causas de rescisión del presente contrato: (i) Que el Distribuidor incumpla en la fecha y lugar de entrega del vehículo por causas imputables a él. (ii) Que el Cliente incumpla con su obligación de pago.</p>
+                            <p><strong>12.</strong> El Consumidor deberá recoger el vehículo en la fecha y lugar establecida en el presente contrato.</p>
+                            <p><strong>13.</strong> El Distribuidor se obliga a: expedir la factura o comprobante de pago por las operaciones efectuadas.</p>
+                            <p class="mb-0"><strong>14.</strong> El Distribuidor se obliga a: (i) No ceder o transmitir a terceros, con fines mercadotécnicos o publicitarios, los datos e información proporcionada por el cliente. (ii) No enviar publicidad sobre bienes y servicios, salvo autorización expresa del Cliente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colCond3" aria-expanded="false">
+                            <i class="bi bi-list-ol me-2" style="color:#2563eb;"></i> Condiciones 15 — 17
+                        </button>
+                    </h2>
+                    <div id="colCond3" class="accordion-collapse collapse" data-bs-parent="#acordeonCondiciones">
+                        <div class="accordion-body">
+                            <p><strong>15.</strong> Las partes están de acuerdo en someterse a la competencia de la Procuraduría Federal del Consumidor en la vía administrativa para resolver cualquier controversia.</p>
+                            <p><strong>16.</strong> El Cliente y el Distribuidor aceptan la realización de la prestación del servicio de reparación y/o mantenimiento, en los términos establecidos en este contrato, y sabedores de su alcance legal, lo firman por duplicado.</p>
+                            <p class="mb-0"><strong>17.</strong> Consentimiento por medios electrónicos. Las partes acuerdan que en lugar de una firma original autógrafa, este contrato podrá ser firmado por medio del uso de firmas electrónicas o digitales.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════ INVENTARIO Y CONDICIONES DE LA UNIDAD ══════ -->
+            <div class="sec-label mt-4">Inventario y Condiciones de la Unidad</div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="asesorInv" name="asesorInv" placeholder="Asesor">
+                        <label for="asesorInv">Asesor</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="telAsesor" name="telAsesor" placeholder="Teléfono">
+                        <label for="telAsesor">Teléfono Asesor</label>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="emailAsesor" name="emailAsesor" placeholder="Correo">
+                        <label for="emailAsesor">Correo Asesor</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="horaEntregaInv" name="horaEntregaInv" placeholder="Hora">
+                        <label for="horaEntregaInv">Hora Entrega</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="placasInv" name="placasInv" placeholder="Placas">
+                        <label for="placasInv">Placas</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="vinInv" name="vinInv" placeholder="VIN">
+                        <label for="vinInv">VIN</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="kmInv" name="kmInv" placeholder="Km">
+                        <label for="kmInv">Kilometraje</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de inventario -->
+            <div class="info-block p-0" style="overflow:hidden;">
+                <table class="w-100" style="border-collapse:collapse;font-size:.78rem;">
+                    <colgroup>
+                        <col style="width:25%;">
+                        <col style="width:25%;">
+                        <col style="width:25%;">
+                        <col style="width:25%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th style="background:#1a3a6b;color:#fff;text-align:left;font-size:.75rem;padding:.4rem .5rem;">INTERIOR</th>
+                            <th style="background:#1a3a6b;color:#fff;text-align:left;font-size:.75rem;padding:.4rem .5rem;">EXTERIOR</th>
+                            <th style="background:#1a3a6b;color:#fff;text-align:left;font-size:.75rem;padding:.4rem .5rem;">TESTIGOS ENCENDIDOS</th>
+                            <th style="background:#1a3a6b;color:#fff;text-align:left;font-size:.75rem;padding:.4rem .5rem;">OBSERVACIONES:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="vertical-align:top;">
+                            <td style="border:1px solid #e2e8f0;padding:.5rem;">
+                                <div class="d-flex gap-2">
+                                    <div style="flex:1;">
+                                        @foreach (var item in new[] {
+                                                                                ("invTapetes","Tapetes"), ("invCeniceros","Ceniceros"),
+                                                                                ("invBocinas","Bocinas"), ("invInstrumentos","Instrumentos"),
+                                                                                ("invEncendedores","Encendedores"), ("invRadio","Radio"),
+                                                                                ("invClaxon","Claxon"), ("invAC","A/C"),
+                                                                                ("invRetrovisor","Retrovisor"), ("invManijas","Manijas"),
+                                                                                ("invVestiduras","Vestiduras"), ("invCinturones","Cinturones"),
+                                                                                ("invManualProp","Manual Prop."), ("invCarnetServicio","Carnet servicio")
+                                                                                })
+                                        {
+                                            <div class="d-flex align-items-center gap-1" style="padding:.1rem 0;font-size:.78rem;">
+                                                <input type="checkbox" id="@item.Item1" class="form-check-input flex-shrink-0" style="width:.9em;height:.9em;">
+                                                <span>@item.Item2</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div style="flex:1;">
+                                        @foreach (var item in new[] {
+                                                                                ("invTarjetaCirculacion","Tjta. Circulacion"),
+                                                                                ("invPolizaSeguro","Poliza de Seguro"),
+                                                                                ("invVerificacion","Verificación"),
+                                                                                ("invAlfombradoCaj","Alfombrado Caj."),
+                                                                                ("invLlantaRefaccion","Llanta refaccion"),
+                                                                                ("invTriangulos","Triángulos"), ("invExtintor","Extintor"),
+                                                                                ("invCablesBateria","Cables batería"), ("invGato","Gato"),
+                                                                                ("invHerramientas","Herramientas"), ("invBotiquin","Botiquín"),
+                                                                                ("invRedProtectora","Red protectora"),
+                                                                                ("invBirloSeguridad","Birlo de seguridad")
+                                                                                })
+                                        {
+                                            <div class="d-flex align-items-center gap-1" style="padding:.1rem 0;font-size:.78rem;">
+                                                <input type="checkbox" id="@item.Item1" class="form-check-input flex-shrink-0" style="width:.9em;height:.9em;">
+                                                <span>@item.Item2</span>
+                                            </div>
+                                        }
+                                        <div style="padding:.1rem 0;font-size:.78rem;">Otros:</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="border:1px solid #e2e8f0;padding:.5rem;">
+                                @foreach (var item in new[] {
+                                                                ("extCristales","Cristales"), ("extLimpiadores","Limpiadores"),
+                                                                ("extTapones","Tapones"), ("extFarosNiebla","Faros de niebla"),
+                                                                ("extAntena","Antena"), ("extTaponGas","Tapón Gas"),
+                                                                ("extMolduras","Molduras"), ("extEspejos","Espejos"),
+                                                                ("extFarosDelanteros","Faros delanteros"),
+                                                                ("extLucesTraseras","Luces Traseras"), ("extGolpes","Golpes")
+                                                                })
+                                {
+                                    <div class="d-flex align-items-center gap-1" style="padding:.1rem 0;font-size:.78rem;">
+                                        <input type="checkbox" id="@item.Item1" class="form-check-input flex-shrink-0" style="width:.9em;height:.9em;">
+                                        <span>@item.Item2</span>
+                                    </div>
+                                }
+                                <div style="padding:.1rem 0;font-size:.78rem;">Otros:</div>
+                            </td>
+                            <td style="border:1px solid #e2e8f0;padding:.5rem;">
+                                @foreach (var item in new[] {
+                                                                ("testLlantas","Llantas"), ("testCheckEngine","Check engine"),
+                                                                ("testVscrack","Vscrack"), ("testPresionAceite","Presión aceite"),
+                                                                ("testControlEstabilidad","Control Estabilidad"),
+                                                                ("testBolsasAire","Bolsas de Aire"),
+                                                                ("testBateria","Batería"), ("testTemperatura","Temperatura")
+                                                                })
+                                {
+                                    <div class="d-flex align-items-center gap-1" style="padding:.15rem 0;font-size:.78rem;">
+                                        <input type="checkbox" id="@item.Item1" class="form-check-input flex-shrink-0" style="width:.9em;height:.9em;">
+                                        <span>@item.Item2</span>
+                                    </div>
+                                }
+                            </td>
+                            <td style="border:1px solid #e2e8f0;padding:.5rem;">
+                                <p style="font-size:.72rem;font-weight:700;color:#1a3a6b;margin-bottom:.3rem;">GASOLINA</p>
+                                <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+                                    <g transform="translate(150, 150)">
+                                        <path d="M -120 0 A 120 120 0 0 1 120 0" fill="none" stroke="#333" stroke-width="2" />
+                                        <line x1="-100" y1="0" x2="-110" y2="0" stroke="#dc2626" stroke-width="4" />
+                                        <line x1="-106" y1="-34" x2="-98" y2="-32" stroke="#333" stroke-width="3" />
+                                        <line x1="-85" y1="-65" x2="-78" y2="-60" stroke="#333" stroke-width="3" />
+                                        <line x1="-58" y1="-88" x2="-53" y2="-81" stroke="#333" stroke-width="3" />
+                                        <line x1="-28" y1="-103" x2="-26" y2="-95" stroke="#333" stroke-width="3" />
+                                        <line x1="0" y1="-110" x2="0" y2="-100" stroke="#333" stroke-width="4" />
+                                        <line x1="28" y1="-103" x2="26" y2="-95" stroke="#333" stroke-width="3" />
+                                        <line x1="58" y1="-88" x2="53" y2="-81" stroke="#333" stroke-width="3" />
+                                        <line x1="85" y1="-65" x2="78" y2="-60" stroke="#333" stroke-width="3" />
+                                        <line x1="106" y1="-35" x2="98" y2="-32" stroke="#333" stroke-width="3" />
+                                        <line x1="100" y1="0" x2="110" y2="0" stroke="#333" stroke-width="4" />
+                                        <line id="fuelNeedle" x1="0" y1="10" x2="0" y2="-95"
+                                              stroke="red" stroke-width="4" stroke-linecap="round"
+                                              transform="rotate(-90, 0, 0)"
+                                              style="transition:transform 0.5s ease;" />
+                                        <circle cx="0" cy="0" r="8" fill="#333" />
+                                        <circle cx="0" cy="0" r="5" fill="white" />
+                                    </g>
+                                    <text x="0" y="165" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#dc2626">E</text>
+                                    <text x="285" y="165" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#333">F</text>
+                                </svg>
+                                <input type="range" class="form-range" id="fuelSlider" min="0" max="100" value="50"
+                                       style="padding:0;margin:.25rem 0;" oninput="updateFuelGauge(this.value)">
+                                <div class="d-flex justify-content-between" style="font-size:.65rem;color:#94a3b8;margin-bottom:.75rem;">
+                                    <span>E</span><span>1/4</span><span>1/2</span><span>3/4</span><span>F</span>
+                                </div>
+                                <p style="font-size:.72rem;font-weight:700;color:#1a3a6b;margin-bottom:.3rem;">SIMBOLOGÍA<br>DE DAÑOS</p>
+                                <button class="btn btn-outline-primary btn-sm rounded-pill w-100"
+                                        data-bs-toggle="modal" data-bs-target="#modalDanos"
+                                        style="font-size:.72rem;">
+                                    <i class="bi bi-car-front me-1"></i>Marcar daños
+                                </button>
+                                <div id="danosResumenBadges" class="mt-1"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ══════ IMAGEN DE LOS COCHES ══════ -->
+            <div class="info-block mt-3" style="position:relative;">
+                <div id="vehicleCanvasPage" style="position:relative;display:inline-block;width:100%;">
+                    <img src="~/imagenes/CochesServicio.jpg" alt="Condiciones de la unidad" class="coches-img">
+                </div>
+            </div>
+
+            <!-- ══════ COMENTARIOS ══════ -->
+            <div class="sec-label">Comentarios</div>
+            <div class="form-floating mb-3">
+                <textarea class="form-control" id="comentarios" name="comentarios"
+                          placeholder="Comentarios" style="height:120px;font-size:.83rem;"></textarea>
+                <label for="comentarios">Comentarios</label>
+            </div>
+
+            <!-- ══════ DATOS ADICIONALES ══════ -->
+            <div class="sec-label">Datos Adicionales</div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="conductor" name="conductor" placeholder="Conductor o Contacto">
+                        <label for="conductor">Conductor o Contacto</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="medioContacto" name="medioContacto" placeholder="Medio">
+                        <label for="medioContacto">Medio de Contacto</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="telContacto" name="telContacto" placeholder="Teléfono">
+                        <label for="telContacto">Teléfono</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="fechaDofu" name="fechaDofu" placeholder="DOFU">
+                        <label for="fechaDofu">Fecha DOFU</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="katashiki" name="katashiki" placeholder="Katashiki">
+                        <label for="katashiki">Katashiki</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-block mb-0 h-100 d-flex flex-column justify-content-center">
+                        <div class="info-block-title">¿Desea ser contactado?</div>
+                        <div class="d-flex gap-3" style="font-size:.83rem;">
+                            <div><input class="form-check-input me-1" type="checkbox" id="chkContactadoSi"> <label for="chkContactadoSi">SI</label></div>
+                            <div><input class="form-check-input me-1" type="checkbox" id="chkContactadoNo"> <label for="chkContactadoNo">NO</label></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ FIRMAS ══════ -->
+            <div class="sec-label mt-3">Firmas</div>
+
+            <div class="row g-3 text-center">
+                <div class="col-md-6">
+                    <p class="fw-bold mb-1" style="font-size:.8rem;">EL DISTRIBUIDOR</p>
+                    <div class="firma-row justify-content-center">
+                        <div class="firma-pad">
+                            <span class="firma-label-top">Firma</span>
+                            <div class="firma-preview" id="pad_firmaDistribuidor" onclick="abrirFirma('firmaDistribuidor')">
+                                <div class="firma-placeholder">
+                                    <i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>
+                                    Toca para firmar
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill d-none"
+                                    id="rehacer_firmaDistribuidor" onclick="rehacerFirma('firmaDistribuidor')">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Rehacer
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mt-1 mb-0" style="font-size:.78rem;">Geisha Querétaro, S de RL de CV</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="fw-bold mb-1" style="font-size:.8rem;">EL CLIENTE</p>
+                    <div class="firma-row justify-content-center">
+                        <div class="firma-pad">
+                            <span class="firma-label-top">Firma</span>
+                            <div class="firma-preview" id="pad_firmaCliente" onclick="abrirFirma('firmaCliente')">
+                                <div class="firma-placeholder">
+                                    <i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>
+                                    Toca para firmar
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill d-none"
+                                    id="rehacer_firmaCliente" onclick="rehacerFirma('firmaCliente')">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Rehacer
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mt-1 mb-0" id="nombreClienteFirma" style="font-size:.78rem;"></p>
+                </div>
+            </div>
+
+            <div class="info-block mt-3" style="background:#fff8e1;border-color:#fde68a;">
+                <p class="mb-0" style="font-size:.78rem;color:#78350f;">
+                    Nota: Agradecemos su preferencia, el lavado de su vehículo es de cortesía y no se hace responsable por objetos olvidados o no reportados dentro del vehículo.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ MODAL SHAREPOINT ══════════════════ -->
+<div class="modal fade" id="modalSharePoint" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header"
+                 style="background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);color:#fff;border-radius:.375rem .375rem 0 0;">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-cloud-fill me-2"></i>SharePoint — Orden PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="sec-label mt-0">Subir PDF generado</p>
+                <p style="font-size:.82rem;color:#64748b;">
+                    Se guardará en <code>Contratos/Servicio/</code>.
+                </p>
+                <button class="btn btn-primary rounded-pill w-100 mb-1"
+                        id="btnSubirPDFModal" onclick="subirPDF()">
+                    <i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF
+                </button>
+                <div id="spUploadResult" class="d-none mt-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ MODAL FIRMA ══════════════════ -->
+<div class="modal fade" id="modalFirma" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="modalFirmaLabel">Captura tu firma</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 d-flex justify-content-center align-items-center bg-light">
+                <canvas id="firmaCanvas" style="border:1px solid #cbd5e1;background:#fff;touch-action:none;width:100%;height:100%;"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary rounded-pill" id="btnLimpiarFirma">
+                    <i class="bi bi-eraser me-1"></i>Limpiar
+                </button>
+                <button class="btn btn-primary rounded-pill" id="btnConfirmarFirma">
+                    <i class="bi bi-check-lg me-1"></i>Confirmar firma
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ MODAL DAÑOS ══════════════════ -->
+<div class="modal fade" id="modalDanos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-car-front me-2"></i>Inspección de Daños</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div style="border:2px dashed #dee2e6;cursor:crosshair;position:relative;aspect-ratio:1/1;border-radius:8px;overflow:hidden;" id="vehicleCanvas">
+                            <img src="~/imagenes/CochesServicio.jpg" alt="Condiciones de la unidad"
+                                 style="width:100%;height:100%;object-fit:contain;pointer-events:none;">
+                        </div>
+                        <div class="rounded p-3 bg-light mt-3">
+                            <p class="small text-muted mb-0">
+                                <strong class="text-dark">Instrucciones:</strong>
+                                Selecciona el tipo de daño y haz clic sobre el vehículo para marcarlo. Haz clic sobre un marcador para eliminarlo.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="d-flex flex-column gap-3">
+                            <div>
+                                <h6 class="fw-semibold mb-2">Tipo de Daño</h6>
+                                <div class="d-flex flex-column gap-2" id="damageTypeButtons">
+                                    <button class="btn text-start p-3 border rounded-4 bg-primary bg-opacity-10"
+                                            onclick="selectDamageType('golpe', this)">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <span class="rounded-pill px-1 text-white" style="background:#dc3545;">
+                                                <i class="bi bi-circle-fill"></i>
+                                            </span>
+                                            <div>
+                                                <div class="small fw-semibold">Golpe (X)</div>
+                                                <div class="small text-muted">Abolladuras o hundimientos</div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    <button class="btn text-start p-3 border rounded-4"
+                                            onclick="selectDamageType('rayon', this)">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <span class="rounded-pill px-1 text-white" style="background:#fd7e14;">
+                                                <i class="bi bi-slash-lg"></i>
+                                            </span>
+                                            <div>
+                                                <div class="small fw-semibold">Rayón (~)</div>
+                                                <div class="small text-muted">Rayaduras superficiales</div>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="fw-semibold mb-2">Daños Registrados</h6>
+                                    <div style="max-height:280px;overflow-y:auto;" id="damageList">
+                                        <div class="text-muted small text-center py-3" id="noDamagesMsg">
+                                            No hay daños registrados.<br>Haz clic en el vehículo para agregar.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary rounded-pill" onclick="limpiarDanos()">
+                    <i class="bi bi-trash me-1"></i>Limpiar todo
+                </button>
+                <button class="btn btn-primary rounded-pill" data-bs-dismiss="modal">
+                    <i class="bi bi-check-lg me-1"></i>Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let ventaIdActual       = null;
+    let _sharePointUniqueId = null;
+
+    const constantesSharePoint = { DRIVE_ID: '', ACCESS_TOKEN: '' };
+
+    // ══════════════════════════════════════════════════════
+    // PDF
+    // ══════════════════════════════════════════════════════
+    async function generarPDF() {
+        if (!ventaIdActual) return;
+        await guardarContrato();
+        window.open(`/ContratoServicio/GenerarPDF?idServicio=${encodeURIComponent(ventaIdActual)}`, '_blank');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SHAREPOINT
+    // ══════════════════════════════════════════════════════
+    function abrirModalSharePoint() {
+        document.getElementById('spUploadResult').className = 'd-none mt-2';
+        document.getElementById('spUploadResult').innerHTML = '';
+        const btn = document.getElementById('btnSubirPDFModal');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF';
+        new bootstrap.Modal(document.getElementById('modalSharePoint')).show();
+    }
+
+    async function subirPDF() {
+        if (!ventaIdActual) return;
+
+        const btn      = document.getElementById('btnSubirPDFModal');
+        const resultEl = document.getElementById('spUploadResult');
+
+        await guardarContrato();
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Subiendo...';
+        resultEl.className = 'd-none mt-2';
+
+        try {
+            const credentials = await sharePointService.generateAccessToken();
+            constantesSharePoint.ACCESS_TOKEN = credentials.access_token;
+            constantesSharePoint.DRIVE_ID     = credentials.driveId;
+
+            const res = await fetch(`/ContratoServicio/GenerarPDF?idServicio=${encodeURIComponent(ventaIdActual)}`);
+            if (!res.ok) throw new Error(`Error al generar el PDF (${res.status})`);
+            const blob = await res.blob();
+
+            const nombreArchivo = `ContratoServicio_${ventaIdActual}_${Date.now()}.pdf`;
+            const file = new File([blob], nombreArchivo, { type: 'application/pdf' });
+
+            const resultado = await sharePointService.uploadFile(file, 'Contratos/Servicio');
+
+            _sharePointUniqueId = resultado.uniqueId;
+            await guardarContrato();
+
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `
+                <div class="alert alert-success py-2 mb-0" style="font-size:.82rem;">
+                    <div class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-1"></i>PDF subido correctamente</div>
+                    <div class="mb-1">
+                        <span class="text-muted">UniqueId:</span>
+                        <code class="user-select-all">${resultado.uniqueId}</code>
+                    </div>
+                    <a href="${resultado.url}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill mt-1">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF
+                    </a>
+                </div>`;
+
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Subido';
+
+        } catch (e) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size:.82rem;">${e.message || 'Error inesperado.'}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF';
+        }
+    }
+
+    async function buscarPorUniqueId() {
+        const uniqueId = document.getElementById('inputUniqueId').value.trim();
+        const resultEl = document.getElementById('spBuscarResult');
+        const btn      = document.getElementById('btnBuscarUniqueId');
+
+        if (!uniqueId) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-warning py-2 mb-0" style="font-size:.82rem;">Ingresa un UniqueId.</div>`;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        resultEl.className = 'd-none mt-2';
+
+        try {
+            if (!constantesSharePoint.ACCESS_TOKEN || !constantesSharePoint.DRIVE_ID) {
+                const credentials = await sharePointService.generateAccessToken();
+                constantesSharePoint.ACCESS_TOKEN = credentials.access_token;
+                constantesSharePoint.DRIVE_ID     = credentials.driveId;
+            }
+
+            const res = await fetch(
+                `https://graph.microsoft.com/v1.0/drives/${constantesSharePoint.DRIVE_ID}/items/${uniqueId}`,
+                { headers: { 'Authorization': `Bearer ${constantesSharePoint.ACCESS_TOKEN}` } }
+            );
+            if (!res.ok) throw new Error('No encontrado');
+            const data = await res.json();
+            const url  = data['@@microsoft.graph.downloadUrl'];
+
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `
+                <div class="alert alert-success py-2 mb-0" style="font-size:.82rem;">
+                    <div class="fw-bold mb-1"><i class="bi bi-file-earmark-pdf-fill me-1"></i>Archivo encontrado</div>
+                    <div class="text-truncate mb-1"><span class="text-muted">Nombre:</span> ${data.name ?? '—'}</div>
+                    <a href="${url}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill mt-1">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF
+                    </a>
+                </div>`;
+        } catch (e) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size:.82rem;">No se encontró el archivo o el UniqueId es inválido.</div>`;
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search"></i>';
+        }
+    }
+
+    // ══════════════════════════════════════════════════════
+    // NAVEGACIÓN
+    // ══════════════════════════════════════════════════════
+    function volverBusqueda() {
+        document.getElementById('ordenWrapper').classList.add('d-none');
+        document.getElementById('busquedaPanel').classList.remove('d-none');
+        document.getElementById('inputVentaId').value = '';
+        document.getElementById('busquedaError').classList.add('d-none');
+        _sharePointUniqueId = null;
+    }
+
+    function mostrarError(msg) {
+        const el = document.getElementById('busquedaError');
+        el.textContent = msg;
+        el.classList.remove('d-none');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // BUSCAR ORDEN
+    // ══════════════════════════════════════════════════════
+    async function buscarOrden() {
+        const id = document.getElementById('inputVentaId').value.trim();
+        if (!id) return mostrarError('Ingresa un número de orden.');
+
+        const btn   = document.getElementById('btnBuscar');
+        const errEl = document.getElementById('busquedaError');
+        errEl.classList.add('d-none');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
+
+        try {
+            const res = await fetch(`/ContratoServicio/ObtenerDatos?idServicio=${encodeURIComponent(id)}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.mensaje || `Error al obtener los datos (${res.status}).`);
+            }
+
+            const dto = await res.json();
+            ventaIdActual = id;
+            llenarCampos(dto);
+
+            document.getElementById('busquedaPanel').classList.add('d-none');
+            document.getElementById('ordenWrapper').classList.remove('d-none');
+
+        } catch (e) {
+            mostrarError(e.message || 'Error inesperado.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search me-2"></i>Cargar Orden';
+        }
+    }
+
+    // ══════════════════════════════════════════════════════
+    // GUARDAR CONTRATO
+    // ══════════════════════════════════════════════════════
+    async function guardarContrato() {
+        if (!ventaIdActual) return;
+
+        const chk = (id) => document.getElementById(id)?.checked ?? false;
+        const val = (id) => document.getElementById(id)?.value ?? '';
+        const obtenerFirmaBase64 = (nombre) => {
+            const img = document.querySelector(`#pad_${nombre} img`);
+            return img ? img.src : null;
+        };
+
+        const payload = {
+            idVenta: parseInt(ventaIdActual),
+            sharePointUniqueId: _sharePointUniqueId,
+
+            invTapetes:        chk('invTapetes'),
+            invCeniceros:      chk('invCeniceros'),
+            invBocinas:        chk('invBocinas'),
+            invInstrumentos:   chk('invInstrumentos'),
+            invEncendedores:   chk('invEncendedores'),
+            invRadio:          chk('invRadio'),
+            invClaxon:         chk('invClaxon'),
+            invAC:             chk('invAC'),
+            invRetrovisor:     chk('invRetrovisor'),
+            invManijas:        chk('invManijas'),
+            invVestiduras:     chk('invVestiduras'),
+            invCinturones:     chk('invCinturones'),
+            invManualProp:     chk('invManualProp'),
+            invCarnetServicio: chk('invCarnetServicio'),
+
+            invTarjetaCirculacion: chk('invTarjetaCirculacion'),
+            invPolizaSeguro:       chk('invPolizaSeguro'),
+            invVerificacion:       chk('invVerificacion'),
+            invAlfombradoCaj:      chk('invAlfombradoCaj'),
+            invLlantaRefaccion:    chk('invLlantaRefaccion'),
+            invTriangulos:         chk('invTriangulos'),
+            invExtintor:           chk('invExtintor'),
+            invCablesBateria:      chk('invCablesBateria'),
+            invGato:               chk('invGato'),
+            invHerramientas:       chk('invHerramientas'),
+            invBotiquin:           chk('invBotiquin'),
+            invRedProtectora:      chk('invRedProtectora'),
+            invBirloSeguridad:     chk('invBirloSeguridad'),
+
+            extCristales:       chk('extCristales'),
+            extLimpiadores:     chk('extLimpiadores'),
+            extTapones:         chk('extTapones'),
+            extFarosNiebla:     chk('extFarosNiebla'),
+            extAntena:          chk('extAntena'),
+            extTaponGas:        chk('extTaponGas'),
+            extMolduras:        chk('extMolduras'),
+            extEspejos:         chk('extEspejos'),
+            extFarosDelanteros: chk('extFarosDelanteros'),
+            extLucesTraseras:   chk('extLucesTraseras'),
+            extGolpes:          chk('extGolpes'),
+
+            testLlantas:            chk('testLlantas'),
+            testCheckEngine:        chk('testCheckEngine'),
+            testVscrack:            chk('testVscrack'),
+            testPresionAceite:      chk('testPresionAceite'),
+            testControlEstabilidad: chk('testControlEstabilidad'),
+            testBolsasAire:         chk('testBolsasAire'),
+            testBateria:            chk('testBateria'),
+            testTemperatura:        chk('testTemperatura'),
+
+            nivelGasolina: parseInt(document.getElementById('fuelSlider')?.value ?? '50'),
+
+            c5ExtLimpiaparabrisas: chk('chkC5ExtLimpiaparabrisas'),
+            c5ExtLuces:            chk('chkC5ExtLuces'),
+            c5ExtAntena:           chk('chkC5ExtAntena'),
+            c5ExtEspejos:          chk('chkC5ExtEspejos'),
+            c5ExtCristales:        chk('chkC5ExtCristales'),
+            c5ExtTapones:          chk('chkC5ExtTapones'),
+            c5ExtMolduras:         chk('chkC5ExtMolduras'),
+            c5ExtTaponGas:         chk('chkC5ExtTaponGas'),
+            c5ExtClaxon:           chk('chkC5ExtClaxon'),
+
+            c5IntInstrumentos: chk('chkC5IntInstrumentos'),
+            c5IntCalefaccion:  chk('chkC5IntCalefaccion'),
+            c5IntAire:         chk('chkC5IntAire'),
+            c5IntRadio:        chk('chkC5IntRadio'),
+            c5IntBocinas:      chk('chkC5IntBocinas'),
+            c5IntEncendedor:   chk('chkC5IntEncendedor'),
+            c5IntEspejoRet:    chk('chkC5IntEspejoRet'),
+            c5IntCeniceros:    chk('chkC5IntCeniceros'),
+            c5IntCinturones:   chk('chkC5IntCinturones'),
+            c5IntTapetes:      chk('chkC5IntTapetes'),
+            c5IntManijas:      chk('chkC5IntManijas'),
+            c5IntEquipoAd:     chk('chkC5IntEquipoAd'),
+            c5IntAccesorios:   chk('chkC5IntAccesorios'),
+            c5IntAditamentos:  chk('chkC5IntAditamentos'),
+            c5IntOtros:        chk('chkC5IntOtros'),
+
+            sinGarantia: chk('chkSinGarantia'),
+            conGarantia: chk('chkConGarantia'),
+
+            partesEntregaSi:     chk('chkSi'),
+            partesEntregaNo:     chk('chkNo'),
+            partesGarantia:      chk('chkGarantia'),
+            partesResiduos:      chk('chkResiduos'),
+            servicioDomicilioSi: chk('chkDomSi'),
+            servicioDomicilioNo: chk('chkDomNo'),
+            polizaSeguros:       chk('chkPolSi'),
+            polizaNoSeguros:     chk('chkPolNo'),
+
+            anticipo:      val('anticipo'),
+            conductor:     val('conductor'),
+            medioContacto: val('medioContacto'),
+            telContacto:   val('telContacto'),
+            fechaDofu:     val('fechaDofu'),
+            katashiki:     val('katashiki'),
+            deseaContacto: chk('chkContactadoSi'),
+
+            firmaDistribuidor: obtenerFirmaBase64('firmaDistribuidor'),
+            firmaCliente:      obtenerFirmaBase64('firmaCliente'),
+            firmaExtra:        obtenerFirmaBase64('firmaExtra'),
+
+            danos: damages.map(d => ({
+                idTipoDano: d.type === 'golpe' ? 1 : 2,
+                coordX:     d.x,
+                coordY:     d.y
+            })),
+            danosJson: JSON.stringify(damages.map(d => ({ type: d.type, x: d.x, y: d.y })))
+        };
+
+        const btn = document.getElementById('btnGuardar');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+
+        try {
+            const res = await fetch('/ContratoServicio/GuardarContrato', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':     'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.mensaje || `Error al guardar (${res.status})`);
+            }
+            mostrarToast('Contrato guardado correctamente.', 'success');
+        } catch (e) {
+            mostrarToast(e.message || 'Error al guardar.', 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i>Guardar';
+        }
+    }
+
+    function mostrarToast(msg, tipo) {
+        let container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${tipo} shadow mb-0 py-2 px-3`;
+        toast.style.cssText = 'font-size:.85rem;min-width:220px;';
+        toast.textContent = msg;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    // ══════════════════════════════════════════════════════
+    // LLENAR CAMPOS
+    // ══════════════════════════════════════════════════════
+    function llenarCampos(dto) {
+        limpiarFormulario();
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val != null && val !== '') el.value = val;
+        };
+        const setText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val) el.textContent = val;
+        };
+        const chkSet = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.checked = !!val;
+        };
+
+        ['hdr_denominacion','hdr_domicilio','hdr_rfc','hdr_telefono','hdr_horario','hdr_correo','hdr_localidad']
+            .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+
+        setText('hdr_denominacion', dto.denominacion);
+        setText('hdr_domicilio',    dto.domicilio);
+        setText('hdr_rfc',          'RFC: ' + dto.rfc);
+        setText('hdr_telefono',     'Tel: ' + dto.telefono + '   Horarios: ' + dto.horarioAtencion);
+        setText('hdr_correo',       'Fax: N/A   Email: ' + dto.correoDistribuidora);
+        setText('hdr_localidad',    dto.localidad);
+
+        set('numOrden',   dto.numOrden);
+        set('fechaOrden', dto.fechaOrden);
+
+        set('nombreCliente',    dto.nombreCliente);
+        set('rfcCliente',       dto.rfcCliente);
+        set('emailCliente',     dto.correo);
+        set('calleCliente',     dto.calle);
+        set('coloniaCliente',   dto.colonia);
+        set('municipioCliente', dto.delegacion);
+        set('estadoCliente',    dto.estado);
+        set('telefonoCliente',  dto.telefonos);
+
+        set('marca',        dto.marca);
+        set('submarca',     dto.submarca);
+        set('tipoVersion',  dto.tipoVersion);
+        set('color',        dto.color);
+        set('anioModelo',   dto.anioModelo);
+        set('capacidad',    dto.capacidad);
+        set('niv',          dto.niv);
+        set('kmRecorridos', dto.kmRecorridos);
+        set('placas',       dto.placas);
+
+        set('asesor',         dto.asesor);
+        set('piramide',       dto.piramide);
+        set('fechaRecepcion', dto.fechaRecepcion);
+        set('fechaEntrega',   dto.fechaEntrega);
+
+        if (dto.polizaNumero) {
+            const chkPolSi = document.getElementById('chkPolSi');
+            const numPol   = document.getElementById('numPoliza');
+            if (chkPolSi) chkPolSi.checked = true;
+            if (numPol)   numPol.value     = dto.polizaNumero;
+        }
+
+        set('asesorInv',      dto.asesor);
+        set('telAsesor',      dto.telAsesor);
+        set('emailAsesor',    dto.emailAsesor);
+        set('horaEntregaInv', dto.horaEntrega);
+        set('placasInv',      dto.placas);
+        set('vinInv',         dto.niv);
+        set('kmInv',          dto.kmRecorridos);
+
+        set('conductor',     dto.conductor);
+        set('medioContacto', dto.medioContacto);
+        set('telContacto',   dto.telContacto);
+        set('fechaDofu',     dto.fechaDofu);
+        set('katashiki',     dto.katashiki);
+
+        const nombreFirma = document.getElementById('nombreClienteFirma');
+        if (nombreFirma && dto.nombreCliente) nombreFirma.textContent = dto.nombreCliente;
+
+        const comentariosEl = document.getElementById('comentarios');
+        if (comentariosEl && dto.comentarios) comentariosEl.value = dto.comentarios;
+
+        if (dto.totalRefacciones != null)
+            set('totalRefacciones', dto.totalRefacciones.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }));
+        if (dto.iva != null)
+            set('iva', dto.iva.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }));
+        if (dto.precioTotal != null)
+            set('parcial', dto.precioTotal.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }));
+
+        const totalConIva = (dto.precioTotal ?? 0) + (dto.iva ?? 0);
+        if (totalConIva > 0)
+            setText('montoTotalPago', totalConIva.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }));
+
+        if (dto.anticipo) set('anticipo', dto.anticipo);
+
+        llenarTablaOperaciones(dto.operaciones ?? []);
+
+        chkSet('invTapetes',           dto.invTapetes);
+        chkSet('invCeniceros',         dto.invCeniceros);
+        chkSet('invBocinas',           dto.invBocinas);
+        chkSet('invInstrumentos',      dto.invInstrumentos);
+        chkSet('invEncendedores',      dto.invEncendedores);
+        chkSet('invRadio',             dto.invRadio);
+        chkSet('invClaxon',            dto.invClaxon);
+        chkSet('invAC',                dto.invAC);
+        chkSet('invRetrovisor',        dto.invRetrovisor);
+        chkSet('invManijas',           dto.invManijas);
+        chkSet('invVestiduras',        dto.invVestiduras);
+        chkSet('invCinturones',        dto.invCinturones);
+        chkSet('invManualProp',        dto.invManualProp);
+        chkSet('invCarnetServicio',    dto.invCarnetServicio);
+        chkSet('invTarjetaCirculacion', dto.invTarjetaCirculacion);
+        chkSet('invPolizaSeguro',       dto.invPolizaSeguro);
+        chkSet('invVerificacion',       dto.invVerificacion);
+        chkSet('invAlfombradoCaj',      dto.invAlfombradoCaj);
+        chkSet('invLlantaRefaccion',    dto.invLlantaRefaccion);
+        chkSet('invTriangulos',         dto.invTriangulos);
+        chkSet('invExtintor',           dto.invExtintor);
+        chkSet('invCablesBateria',      dto.invCablesBateria);
+        chkSet('invGato',               dto.invGato);
+        chkSet('invHerramientas',       dto.invHerramientas);
+        chkSet('invBotiquin',           dto.invBotiquin);
+        chkSet('invRedProtectora',      dto.invRedProtectora);
+        chkSet('invBirloSeguridad',     dto.invBirloSeguridad);
+        chkSet('extCristales',         dto.extCristales);
+        chkSet('extLimpiadores',       dto.extLimpiadores);
+        chkSet('extTapones',           dto.extTapones);
+        chkSet('extFarosNiebla',       dto.extFarosNiebla);
+        chkSet('extAntena',            dto.extAntena);
+        chkSet('extTaponGas',          dto.extTaponGas);
+        chkSet('extMolduras',          dto.extMolduras);
+        chkSet('extEspejos',           dto.extEspejos);
+        chkSet('extFarosDelanteros',   dto.extFarosDelanteros);
+        chkSet('extLucesTraseras',     dto.extLucesTraseras);
+        chkSet('extGolpes',            dto.extGolpes);
+        chkSet('testLlantas',            dto.testLlantas);
+        chkSet('testCheckEngine',        dto.testCheckEngine);
+        chkSet('testVscrack',            dto.testVscrack);
+        chkSet('testPresionAceite',      dto.testPresionAceite);
+        chkSet('testControlEstabilidad', dto.testControlEstabilidad);
+        chkSet('testBolsasAire',         dto.testBolsasAire);
+        chkSet('testBateria',            dto.testBateria);
+        chkSet('testTemperatura',        dto.testTemperatura);
+        chkSet('chkC5ExtLimpiaparabrisas', dto.c5ExtLimpiaparabrisas);
+        chkSet('chkC5ExtLuces',            dto.c5ExtLuces);
+        chkSet('chkC5ExtAntena',           dto.c5ExtAntena);
+        chkSet('chkC5ExtEspejos',          dto.c5ExtEspejos);
+        chkSet('chkC5ExtCristales',        dto.c5ExtCristales);
+        chkSet('chkC5ExtTapones',          dto.c5ExtTapones);
+        chkSet('chkC5ExtMolduras',         dto.c5ExtMolduras);
+        chkSet('chkC5ExtTaponGas',         dto.c5ExtTaponGas);
+        chkSet('chkC5ExtClaxon',           dto.c5ExtClaxon);
+        chkSet('chkC5IntInstrumentos', dto.c5IntInstrumentos);
+        chkSet('chkC5IntCalefaccion',  dto.c5IntCalefaccion);
+        chkSet('chkC5IntAire',         dto.c5IntAire);
+        chkSet('chkC5IntRadio',        dto.c5IntRadio);
+        chkSet('chkC5IntBocinas',      dto.c5IntBocinas);
+        chkSet('chkC5IntEncendedor',   dto.c5IntEncendedor);
+        chkSet('chkC5IntEspejoRet',    dto.c5IntEspejoRet);
+        chkSet('chkC5IntCeniceros',    dto.c5IntCeniceros);
+        chkSet('chkC5IntCinturones',   dto.c5IntCinturones);
+        chkSet('chkC5IntTapetes',      dto.c5IntTapetes);
+        chkSet('chkC5IntManijas',      dto.c5IntManijas);
+        chkSet('chkC5IntEquipoAd',     dto.c5IntEquipoAd);
+        chkSet('chkC5IntAccesorios',   dto.c5IntAccesorios);
+        chkSet('chkC5IntAditamentos',  dto.c5IntAditamentos);
+        chkSet('chkC5IntOtros',        dto.c5IntOtros);
+        chkSet('chkSinGarantia', dto.sinGarantia);
+        chkSet('chkConGarantia', dto.conGarantia);
+        chkSet('chkSi',       dto.partesEntregaSi);
+        chkSet('chkNo',       dto.partesEntregaNo);
+        chkSet('chkGarantia', dto.partesGarantia);
+        chkSet('chkResiduos', dto.partesResiduos);
+        chkSet('chkDomSi',    dto.servicioDomicilioSi);
+        chkSet('chkDomNo',    dto.servicioDomicilioNo);
+        chkSet('chkPolSi',    dto.polizaSeguros || !!dto.polizaNumero);
+        chkSet('chkPolNo',    dto.polizaNoSeguros);
+        chkSet('chkContactadoSi', dto.deseaContacto);
+        chkSet('chkContactadoNo', !dto.deseaContacto && dto.deseaContacto != null);
+
+        if (dto.nivelGasolina != null) updateFuelGauge(dto.nivelGasolina);
+
+        ['firmaDistribuidor', 'firmaCliente', 'firmaExtra'].forEach(nombre => {
+            const v = dto[nombre];
+            if (v) guardarFirmaEnPreview(nombre, v);
+        });
+
+        limpiarDanos();
+        if (dto.danos && dto.danos.length > 0) {
+            dto.danos.forEach(d => {
+                const type   = d.idTipoDano === 1 ? 'golpe' : 'rayon';
+                const id     = `${Date.now()}-${Math.random()}`;
+                const damage = { id, type, x: d.coordX, y: d.coordY };
+                damages.push(damage);
+                renderDamageMarkers(damage);
+            });
+            renderDamageList();
+            actualizarResumenBadges();
+        }
+
+        // Restaurar UniqueId guardado
+        _sharePointUniqueId = dto.sharePointUniqueId ?? null;
+    }
+
+    // ══════════════════════════════════════════════════════
+    // TABLA DE OPERACIONES
+    // ══════════════════════════════════════════════════════
+    function llenarTablaOperaciones(operaciones) {
+        const tbody = document.getElementById('tablaOperaciones');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        let total = 0;
+
+        if (operaciones.length > 0) {
+            operaciones.forEach(op => {
+                total += op.total ?? 0;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="form-control form-control-sm border-0" value="${op.articulo ?? ''}" readonly></td>
+                    <td><input type="text" class="form-control form-control-sm border-0" value="${op.descripcion ?? ''}" readonly></td>
+                    <td><input type="text" class="form-control form-control-sm border-0 text-center" value="${op.cantidad ?? ''}" readonly></td>
+                    <td><input type="text" class="form-control form-control-sm border-0 text-end" value="${op.precioUnitStr ?? ''}" readonly></td>
+                    <td><input type="text" class="form-control form-control-sm border-0 text-end" value="${op.totalStr ?? ''}" readonly></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        const filasTotales = Math.max(operaciones.length, 8);
+        for (let i = operaciones.length; i < filasTotales; i++) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="form-control form-control-sm border-0" placeholder=""></td>
+                <td><input type="text" class="form-control form-control-sm border-0" placeholder=""></td>
+                <td><input type="text" class="form-control form-control-sm border-0 text-center" placeholder=""></td>
+                <td><input type="text" class="form-control form-control-sm border-0 text-end" placeholder="$0.00"></td>
+                <td><input type="text" class="form-control form-control-sm border-0 text-end" placeholder="$0.00"></td>`;
+            tbody.appendChild(tr);
+        }
+
+        const montoEl = document.getElementById('montoTotal');
+        if (montoEl && total > 0)
+            montoEl.value = total.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SIGNATURE PAD
+    // ══════════════════════════════════════════════════════
+    let signaturePad = null;
+    let firmaActual  = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+            initFirmaModal();
+
+        const params = new URLSearchParams(window.location.search);
+        const idServicio = params.get('idServicio');
+        if (idServicio) {
+            document.getElementById('inputVentaId').value = idServicio;
+            buscarOrden();
+        }
+    });
+
+    function initFirmaModal() {
+        const canvas  = document.getElementById('firmaCanvas');
+        const modalEl = document.getElementById('modalFirma');
+
+        signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255,255,255)',
+            penColor: 'rgb(15, 23, 42)'
+        });
+
+        modalEl.addEventListener('shown.bs.modal', () => {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width  = canvas.offsetWidth  * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext('2d').scale(ratio, ratio);
+            signaturePad.clear();
+        });
+
+        document.getElementById('btnLimpiarFirma').addEventListener('click', () => signaturePad.clear());
+
+        document.getElementById('btnConfirmarFirma').addEventListener('click', () => {
+            if (signaturePad.isEmpty()) { alert('Por favor dibuja tu firma antes de confirmar.'); return; }
+            const dataUrl = signaturePad.toDataURL('image/png');
+            guardarFirmaEnPreview(firmaActual, dataUrl);
+            bootstrap.Modal.getInstance(modalEl).hide();
+        });
+    }
+
+    function abrirFirma(nombre) {
+        firmaActual = nombre;
+        document.getElementById('modalFirmaLabel').textContent = `Firma — ${nombre}`;
+        new bootstrap.Modal(document.getElementById('modalFirma')).show();
+    }
+
+    function guardarFirmaEnPreview(nombre, dataUrl) {
+        const padEl = document.getElementById(`pad_${nombre}`);
+        const rehEl = document.getElementById(`rehacer_${nombre}`);
+        if (!padEl) return;
+        padEl.innerHTML = `<img src="${dataUrl}" alt="Firma" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+        padEl.onclick = null;
+        padEl.style.cursor = 'default';
+        padEl.style.borderStyle = 'solid';
+        padEl.style.borderColor = '#22c55e';
+        if (rehEl) rehEl.classList.remove('d-none');
+    }
+
+    function rehacerFirma(nombre) {
+        const padEl = document.getElementById(`pad_${nombre}`);
+        const rehEl = document.getElementById(`rehacer_${nombre}`);
+        padEl.innerHTML = `<div class="firma-placeholder"><i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>Toca para firmar</div>`;
+        padEl.onclick = () => abrirFirma(nombre);
+        padEl.style.cursor = 'pointer';
+        padEl.style.borderStyle = 'dashed';
+        padEl.style.borderColor = '#cbd5e1';
+        if (rehEl) rehEl.classList.add('d-none');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // NIVEL DE GASOLINA
+    // ══════════════════════════════════════════════════════
+    function updateFuelGauge(value) {
+        document.getElementById('fuelSlider').value = value;
+        const rotation = -90 + (value / 100) * 180;
+        document.getElementById('fuelNeedle').setAttribute('transform', `rotate(${rotation}, 0, 0)`);
+    }
+
+    // ══════════════════════════════════════════════════════
+    // DAÑOS
+    // ══════════════════════════════════════════════════════
+    let damages = [];
+    let selectedDamageType = 'golpe';
+
+    const damageConfig = {
+        golpe: { color: '#dc3545', label: 'X',  text: 'Golpe' },
+        rayon: { color: '#fd7e14', label: '~',  text: 'Rayón' }
+    };
+
+    function selectDamageType(type, btn) {
+        selectedDamageType = type;
+        document.querySelectorAll('#damageTypeButtons .btn').forEach(b => b.classList.remove('bg-primary','bg-opacity-10'));
+        btn.classList.add('bg-primary','bg-opacity-10');
+    }
+
+    function handleCanvasClick(event) {
+        const canvas = document.getElementById('vehicleCanvas');
+        const rect   = canvas.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top)  / rect.height;
+        addDamage(x, y);
+    }
+
+    function addDamage(x, y) {
+        const id     = `${Date.now()}-${Math.random()}`;
+        const damage = { id, type: selectedDamageType, x, y };
+        damages.push(damage);
+        renderDamageMarkers(damage);
+        renderDamageList();
+        actualizarResumenBadges();
+    }
+
+    function renderDamageMarkers(damage) {
+        const cfg = damageConfig[damage.type];
+
+        ['vehicleCanvas', 'vehicleCanvasPage'].forEach(canvasId => {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+
+            const insertar = () => {
+                const prev = document.getElementById(`marker-${damage.id}-${canvasId}`);
+                if (prev) prev.remove();
+
+                const marker = document.createElement('div');
+                marker.id        = `marker-${damage.id}-${canvasId}`;
+                marker.className = 'damage-marker';
+                marker.style.cssText = [
+                    'position:absolute',
+                    `left:${damage.x * 100}%`,
+                    `top:${damage.y * 100}%`,
+                    'transform:translate(-50%,-50%)',
+                    'width:26px', 'height:26px',
+                    'border-radius:50%',
+                    'display:flex', 'align-items:center', 'justify-content:center',
+                    'font-weight:bold', 'color:white',
+                    'border:2px solid white',
+                    'box-shadow:0 2px 4px rgba(0,0,0,.3)',
+                    'cursor:pointer', 'font-size:13px', 'z-index:10',
+                    `background:${cfg.color}`,
+                    'pointer-events:auto', 'user-select:none'
+                ].join(';');
+                marker.textContent = cfg.label;
+                marker.title       = `${cfg.text} — clic para eliminar`;
+                marker.onclick     = (e) => { e.stopPropagation(); removeDamage(damage.id); };
+                canvas.appendChild(marker);
+            };
+
+            const img = canvas.querySelector('img');
+            if (!img || img.complete) insertar();
+            else img.addEventListener('load', insertar, { once: true });
+        });
+    }
+
+    function removeDamage(id) {
+        damages = damages.filter(d => d.id !== id);
+        ['vehicleCanvas', 'vehicleCanvasPage'].forEach(canvasId => {
+            const marker = document.getElementById(`marker-${id}-${canvasId}`);
+            if (marker) marker.remove();
+        });
+        renderDamageList();
+        actualizarResumenBadges();
+    }
+
+    function renderDamageList() {
+        const list  = document.getElementById('damageList');
+        const noMsg = document.getElementById('noDamagesMsg');
+        if (!list) return;
+        if (damages.length === 0) {
+            list.querySelectorAll('.damage-list-item').forEach(el => el.remove());
+            if (noMsg) noMsg.classList.remove('d-none');
+            return;
+        }
+        if (noMsg) noMsg.classList.add('d-none');
+        list.querySelectorAll('.damage-list-item').forEach(el => el.remove());
+        damages.forEach(d => {
+            const cfg  = damageConfig[d.type];
+            const item = document.createElement('div');
+            item.className = 'damage-list-item d-flex align-items-center gap-2 border rounded p-2 bg-light mb-2';
+            item.innerHTML = `
+                <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                     style="width:24px;height:24px;background:${cfg.color};font-size:11px;font-weight:bold;flex-shrink:0;">
+                    ${cfg.label}
+                </div>
+                <div class="flex-grow-1">
+                    <div class="small fw-medium">${cfg.text}</div>
+                    <div class="small text-muted">Pos: ${(d.x * 100).toFixed(1)}%, ${(d.y * 100).toFixed(1)}%</div>
+                </div>
+                <button class="btn btn-sm p-0 text-muted" style="width:28px;height:28px;"
+                        onclick="removeDamage('${d.id}')">
+                    <i class="bi bi-x"></i>
+                </button>`;
+            list.appendChild(item);
+        });
+    }
+
+    function limpiarDanos() {
+        damages = [];
+        ['vehicleCanvas', 'vehicleCanvasPage'].forEach(canvasId => {
+            const canvas = document.getElementById(canvasId);
+            if (canvas) canvas.querySelectorAll('[id^="marker-"]').forEach(m => m.remove());
+        });
+        renderDamageList();
+        actualizarResumenBadges();
+    }
+
+    function actualizarResumenBadges() {
+        const el = document.getElementById('danosResumenBadges');
+        if (!el) return;
+        if (damages.length === 0) { el.innerHTML = ''; return; }
+        const conteo = {};
+        damages.forEach(d => { conteo[d.type] = (conteo[d.type] || 0) + 1; });
+        el.innerHTML = Object.entries(conteo).map(([type, count]) =>
+            `<span class="badge" style="background:${damageConfig[type].color};font-size:.65rem;">
+                ${damageConfig[type].label}: ${count}
+             </span>`
+        ).join(' ');
+    }
+
+    function limpiarFormulario() {
+        document.querySelectorAll('#ordenWrapper input[type="text"], #ordenWrapper input[type="email"], #ordenWrapper input[type="tel"], #ordenWrapper textarea')
+            .forEach(el => el.value = '');
+        document.querySelectorAll('#ordenWrapper input[type="checkbox"]')
+            .forEach(el => el.checked = false);
+
+        ['hdr_denominacion','hdr_domicilio','hdr_rfc','hdr_telefono','hdr_horario','hdr_correo','hdr_localidad']
+            .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ''; });
+
+        const nombreFirma = document.getElementById('nombreClienteFirma');
+        if (nombreFirma) nombreFirma.textContent = '';
+
+        const montoTotalPago = document.getElementById('montoTotalPago');
+        if (montoTotalPago) montoTotalPago.textContent = '';
+
+        llenarTablaOperaciones([]);
+        updateFuelGauge(50);
+        limpiarDanos();
+
+        ['firmaDistribuidor', 'firmaCliente', 'firmaExtra'].forEach(nombre => {
+            const padEl = document.getElementById(`pad_${nombre}`);
+            const rehEl = document.getElementById(`rehacer_${nombre}`);
+            if (!padEl) return;
+            padEl.innerHTML = `<div class="firma-placeholder"><i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>Toca para firmar</div>`;
+            padEl.onclick = () => abrirFirma(nombre);
+            padEl.style.cursor = 'pointer';
+            padEl.style.borderStyle = 'dashed';
+            padEl.style.borderColor = '#cbd5e1';
+            if (rehEl) rehEl.classList.add('d-none');
+        });
+    }
+</script>
+
+<script src="~/js/librerias/sharepoint.js"></script>
+<script src="~/js/helpers/utils.js"></script>
+<script src="~/js/signature/signature_pad.umd.min.js"></script>

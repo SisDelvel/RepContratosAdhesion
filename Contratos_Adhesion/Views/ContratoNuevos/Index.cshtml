@@ -1,0 +1,1551 @@
+﻿@{
+    ViewData["Title"] = "Contrato de Compraventa de Vehículo Nuevo";
+}
+
+<style>
+    /* ── Wrapper ── */
+    #contratoWrapper {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    /* ── Header band ── */
+    .contrato-band {
+        background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+        color: #fff;
+        border-radius: 12px 12px 0 0;
+        padding: 1rem 1.5rem;
+    }
+
+        .contrato-band .folio-badge {
+            font-size: .68rem;
+            background: rgba(255,255,255,.2);
+            border-radius: 20px;
+            padding: 2px 10px;
+            letter-spacing: .04em;
+            display: inline-block;
+            margin-bottom: .3rem;
+        }
+
+        .contrato-band .contrato-title {
+            font-size: .95rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .contrato-band .contrato-subtitle {
+            font-size: .75rem;
+            opacity: .8;
+            margin-top: .2rem;
+        }
+
+    /* ── Section label ── */
+    .sec-label {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #2563eb;
+        border-left: 3px solid #2563eb;
+        padding-left: .6rem;
+        margin: 1.4rem 0 .8rem;
+    }
+
+    /* ── Floating label tweaks ── */
+    .form-floating > label {
+        font-size: .78rem;
+        color: #64748b;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        font-size: .88rem;
+        border-radius: 8px;
+    }
+
+        .form-floating > .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+
+    /* ── Readonly look ── */
+    .form-control[readonly] {
+        background-color: #f8faff;
+        color: #374151;
+        cursor: default;
+    }
+
+    /* ── Info block ── */
+    .info-block {
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: .85rem 1rem;
+        margin-bottom: .75rem;
+    }
+
+        .info-block .info-block-title {
+            font-size: .72rem;
+            font-weight: 700;
+            color: #1a3a6b;
+            margin-bottom: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+    /* ── Acordeón de cláusulas ── */
+    .clausulas-accordion .accordion-button {
+        font-size: .83rem;
+        font-weight: 600;
+        color: #1a3a6b;
+        background: #f8faff;
+        border-radius: 8px !important;
+        padding: .7rem 1rem;
+    }
+
+        .clausulas-accordion .accordion-button:not(.collapsed) {
+            background: #eff6ff;
+            color: #2563eb;
+            box-shadow: none;
+        }
+
+        .clausulas-accordion .accordion-button::after {
+            filter: none;
+        }
+
+    .clausulas-accordion .accordion-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px !important;
+        margin-bottom: .5rem;
+        overflow: hidden;
+    }
+
+    .clausulas-accordion .accordion-body {
+        font-size: .83rem;
+        color: #374151;
+        line-height: 1.65;
+        padding: .85rem 1rem;
+    }
+
+    /* ── Firma row (igual que FIC) ── */
+    .firma-row {
+        background: #f8faff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: .75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: .5rem;
+        flex-wrap: wrap;
+    }
+
+        .firma-row .firma-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .firma-row .firma-pad {
+            min-width: 200px;
+            flex: 0 0 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .4rem;
+        }
+
+    .firma-preview {
+        width: 200px;
+        height: 80px;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        cursor: pointer;
+        transition: border-color .2s;
+    }
+
+        .firma-preview:hover {
+            border-color: #2563eb;
+        }
+
+        .firma-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .firma-preview .firma-placeholder {
+            font-size: .72rem;
+            color: #94a3b8;
+            text-align: center;
+            padding: .5rem;
+        }
+
+    .firma-label-top {
+        font-size: .68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #64748b;
+    }
+
+    /* ── Declaración banner ── */
+    .contrato-declaracion {
+        background: linear-gradient(135deg, #1a3a6b, #2563eb);
+        color: #fff;
+        font-size: .82rem;
+        font-weight: 600;
+        text-align: center;
+        padding: .85rem 1rem;
+        border-radius: 8px;
+    }
+
+    /* ── Action bar ── */
+    .contrato-action-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    /* ── Monto highlight ── */
+    .monto-total {
+        background: #eff6ff;
+        border: 2px solid #2563eb;
+        border-radius: 8px;
+        padding: .5rem .9rem;
+        font-size: .9rem;
+        font-weight: 700;
+        color: #1a3a6b;
+    }
+
+    /* ── Datos personales radio ── */
+    .datos-personales-opciones {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        margin-top: .3rem;
+    }
+
+        .datos-personales-opciones .form-check-label {
+            font-size: .83rem;
+            color: #374151;
+            cursor: pointer;
+        }
+
+    /* ── Print ── */
+    @@media print {
+        .contrato-action-bar {
+            display: none !important;
+        }
+
+        .contrato-band {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .clausulas-accordion .accordion-collapse {
+            display: block !important;
+        }
+    }
+</style>
+
+<!-- ══════════════════ PANEL DE BÚSQUEDA ══════════════════ -->
+<div id="busquedaPanel" style="max-width:480px;margin:6rem auto 0;">
+    <div class="card border-0 shadow-sm" style="border-radius:16px;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);color:#fff;padding:1.5rem;text-align:center;">
+            <div style="font-size:2.4rem;margin-bottom:.5rem;">📄</div>
+            <h5 class="fw-bold mb-0">Contrato de Compraventa</h5>
+            <p class="mb-0 mt-1" style="font-size:.82rem;opacity:.85;">Ingresa el ID de venta para cargar el contrato</p>
+        </div>
+        <div class="card-body p-4">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="inputVentaId"
+                       placeholder="ID de Venta" autofocus
+                       onkeydown="if(event.key==='Enter') buscarVenta()">
+                <label for="inputVentaId">ID de Venta</label>
+            </div>
+            <div id="busquedaError" class="alert alert-danger d-none py-2" role="alert" style="font-size:.83rem;"></div>
+            <button class="btn btn-primary w-100 rounded-pill" onclick="buscarVenta()" id="btnBuscar">
+                <i class="bi bi-search me-2"></i>Cargar Contrato
+            </button>
+
+            <hr class="my-3">
+
+            <!-- Buscar PDF en SharePoint por UniqueId -->
+            <p class="mb-2" style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;">
+                <i class="bi bi-cloud-fill me-1" style="color:#2563eb;"></i>Buscar PDF en SharePoint
+            </p>
+            <div class="input-group">
+                <input type="text" class="form-control" id="inputUniqueId"
+                       placeholder="UniqueId del archivo"
+                       style="font-size:.83rem;"
+                       onkeydown="if(event.key==='Enter') buscarPorUniqueId()">
+                <button class="btn btn-outline-primary" id="btnBuscarUniqueId" onclick="buscarPorUniqueId()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <div id="spBuscarResult" class="d-none mt-2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ CONTRATO WRAPPER ══════════════════ -->
+<div id="contratoWrapper" class="d-none">
+
+    <!-- Action bar -->
+    <div class="contrato-action-bar">
+        <div>
+            <span id="contratoBadgeTop" class="badge bg-primary-subtle text-primary rounded-pill me-2" style="font-size:.72rem;">CONTRATO</span>
+            <span class="fw-semibold">Compraventa de Vehículo Nuevo</span>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="volverBusqueda()">
+                <i class="bi bi-arrow-left me-1"></i>Cambiar venta
+            </button>
+            <button class="btn btn-success btn-sm rounded-pill" onclick="guardarContrato()">
+                <i class="bi bi-floppy-fill me-1"></i>Guardar
+            </button>
+            <button class="btn btn-primary btn-sm rounded-pill" id="btnGenerarPDF" onclick="generarPDF()">
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Generar PDF
+            </button>
+            <button class="btn btn-info btn-sm rounded-pill text-white" id="btnSubirSharePoint" onclick="abrirModalSharePoint()">
+                <i class="bi bi-cloud-upload-fill me-1"></i>Subir a SharePoint
+            </button>
+        </div>
+    </div>
+
+    <!-- Card principal -->
+    <div class="card border-0 shadow-sm" style="border-radius:12px;overflow:hidden;">
+
+        <!-- Band header -->
+        <div class="contrato-band">
+            <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+
+                <!-- Distribuidora -->
+                <div style="flex:1;min-width:200px;">
+                    <div class="contrato-title mb-2">Contrato de Compraventa de Vehículo Nuevo Automotor</div>
+                    <p id="denominacion" class="mb-1" style="font-size:.8rem;font-weight:700;opacity:1;"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;">
+                        RFC: <span id="rfcDistribuidora"></span>
+                    </p>
+                    <p id="domicilioDistribuidora" class="mb-1" style="font-size:.75rem;opacity:.85;"></p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;">
+                        Tel: <span id="telefonoDistribuidora"></span>
+                    </p>
+                    <p class="mb-1" style="font-size:.75rem;opacity:.85;">Lunes a Viernes 9:00–19:00 hrs, Sábado 9:00–14:00 hrs</p>
+                    <p class="mb-0" style="font-size:.75rem;opacity:.85;">
+                        <span id="dist_correo_header"></span>
+                    </p>
+                </div>
+
+                <!-- Localidad -->
+                <div style="flex:0 0 180px;border-left:1px solid rgba(255,255,255,.3);padding-left:1rem;">
+                    <p class="mb-1" style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.7;">Localidad</p>
+                    <p id="localidadEntrega" class="mb-0" style="font-size:.78rem;"></p>
+                </div>
+
+                <!-- Folio / Fecha -->
+                <div style="min-width:200px;">
+                    <div class="form-floating mb-2">
+                        <input type="text" readonly class="form-control bg-transparent border-white border-opacity-50"
+                               id="folio" name="folio" placeholder="Folio" style="color:#fff;">
+                        <label for="folio" style="color:rgba(255,255,255,.7);">Folio</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="date" readonly class="form-control bg-transparent border-white border-opacity-50"
+                               id="fechaContrato" name="fechaContrato" placeholder="Fecha" style="color:#fff;">
+                        <label for="fechaContrato" style="color:rgba(255,255,255,.7);">Fecha del Contrato</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+
+            <!-- ══════ SECCIÓN 2: DATOS DEL CLIENTE ══════ -->
+            <div class="sec-label">Datos del Cliente (Consumidor)</div>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="nombreCliente" name="nombreCliente" placeholder="Nombre">
+                        <label for="nombreCliente">Nombre Completo</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="rfcCliente" name="rfcCliente" placeholder="RFC">
+                        <label for="rfcCliente">R.F.C.</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="calleCliente" name="calleCliente" placeholder="Calle">
+                        <label for="calleCliente">Calle</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="extCliente" name="extCliente" placeholder="Ext.">
+                        <label for="extCliente">Ext.</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="intCliente" name="intCliente" placeholder="Int.">
+                        <label for="intCliente">Int.</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="coloniaCliente" name="coloniaCliente" placeholder="Colonia">
+                        <label for="coloniaCliente">Colonia</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="cpCliente" name="cpCliente" placeholder="C.P.">
+                        <label for="cpCliente">C.P.</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="municipioCliente" name="municipioCliente" placeholder="Municipio">
+                        <label for="municipioCliente">Delegación / Municipio</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="estadoCliente" name="estadoCliente" placeholder="Estado">
+                        <label for="estadoCliente">Estado</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="tel" readonly class="form-control" id="telefonoCliente" name="telefonoCliente" placeholder="Teléfono">
+                        <label for="telefonoCliente">Teléfono(s)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="email" readonly class="form-control" id="emailCliente" name="emailCliente" placeholder="Correo">
+                        <label for="emailCliente">Correo Electrónico</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ SECCIÓN 3: CARACTERÍSTICAS DEL VEHÍCULO ══════ -->
+            <div class="sec-label">Características del Vehículo</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="marca" name="marca" placeholder="Marca">
+                        <label for="marca">Marca</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="submarca" name="submarca" placeholder="Submarca">
+                        <label for="submarca">Submarca</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="catalogo" name="catalogo" placeholder="Catálogo">
+                        <label for="catalogo">Catálogo</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="tipoVersion" name="tipoVersion" placeholder="Tipo / Versión">
+                        <label for="tipoVersion">Tipo / Versión</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="color" name="color" placeholder="Color">
+                        <label for="color">Color</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="anioModelo" name="anioModelo" placeholder="Año-Modelo">
+                        <label for="anioModelo">Año-Modelo</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="capacidad" name="capacidad" placeholder="Capacidad">
+                        <label for="capacidad">Capacidad</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="fechaEntrega" name="fechaEntrega" placeholder="Fecha de Entrega">
+                        <label for="fechaEntrega">Fecha de Entrega</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="niv" name="niv" placeholder="NIV">
+                        <label for="niv">Número de Identificación Vehicular (NIV)</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="lugarEntrega" name="lugarEntrega" placeholder="Lugar de Entrega">
+                        <label for="lugarEntrega">Lugar de Entrega del Vehículo</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ SECCIÓN 4: MONTO Y FORMA DE PAGO ══════ -->
+            <div class="sec-label">Monto de la Operación y Forma de Pago</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="info-block h-100">
+                        <div class="info-block-title">Desglose de la Operación</div>
+                        <div class="row g-2">
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Precio del vehículo</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="precioVehiculo" name="precioVehiculo" placeholder="$0.00">
+                                    <label for="precioVehiculo" style="font-size:.7rem;">Precio</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Equipo y accesorios adicionales</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="precioEquipo" name="precioEquipo" placeholder="$0.00">
+                                    <label for="precioEquipo" style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Otros cargos</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="otrosCargos" name="otrosCargos" placeholder="$0.00">
+                                    <label for="otrosCargos" style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Impuestos al valor agregado</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="iva" name="iva" placeholder="$0.00">
+                                    <label for="iva" style="font-size:.7rem;">IVA</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="monto-total d-flex justify-content-between align-items-center">
+                                    <span>Monto Total de la Operación</span>
+                                    <span id="montoTotal"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-block h-100">
+                        <div class="info-block-title">Forma de Pago</div>
+                        <div class="row g-2">
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Contado</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="pagoContado" name="pagoContado" placeholder="$0.00">
+                                    <label for="pagoContado" style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-8 d-flex align-items-center" style="font-size:.83rem;">Enganche o Unidad usada a cuenta</div>
+                            <div class="col-4">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control form-control-sm" id="enganche" name="enganche" placeholder="$0.00">
+                                    <label for="enganche" style="font-size:.7rem;">Importe</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating mt-1">
+                                    <textarea class="form-control" id="descripcionPago" name="descripcionPago"
+                                              placeholder="Descripción" style="height:80px;font-size:.83rem;"></textarea>
+                                    <label for="descripcionPago">Ver Descripción / Observaciones de Pago</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equipo y accesorios + Unidad usada -->
+                <div class="col-md-6">
+                    <div class="info-block">
+                        <div class="info-block-title">Equipo y Accesorios Adicionales</div>
+                        <div class="form-floating">
+                            <textarea class="form-control" id="equipoAdicional" name="equipoAdicional"
+                                      placeholder="Detalle" style="height:80px;font-size:.83rem;"></textarea>
+                            <label for="equipoAdicional">Detalle de Equipo y Accesorios</label>
+                        </div>
+                        <div class="form-floating mt-2">
+                            <input type="text" readonly class="form-control" id="totalEquipo" name="totalEquipo" placeholder="Total equipo">
+                            <label for="totalEquipo">Total Equipo y Accesorios Adicionales</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-block">
+                        <div class="info-block-title">Descripción Unidad Usada (si aplica)</div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaNiv" name="usadaNiv" placeholder="NIV">
+                                    <label for="usadaNiv">Número de Identificación Vehicular</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaMarca" name="usadaMarca" placeholder="Marca">
+                                    <label for="usadaMarca">Marca</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaSubmarca" name="usadaSubmarca" placeholder="Submarca">
+                                    <label for="usadaSubmarca">Submarca</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaVersion" name="usadaVersion" placeholder="Tipo/Versión">
+                                    <label for="usadaVersion">Tipo / Versión</label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaColor" name="usadaColor" placeholder="Color">
+                                    <label for="usadaColor">Color</label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaAnio" name="usadaAnio" placeholder="Año">
+                                    <label for="usadaAnio">Año</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" readonly class="form-control" id="usadaValor" name="usadaValor" placeholder="Valor">
+                                    <label for="usadaValor">Valor de la Unidad</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ TEXTO DEL CONTRATO EN ACORDEONES ══════ -->
+            <div class="sec-label mt-4">Texto del Contrato</div>
+
+            <p class="text-muted mb-3" style="font-size:.82rem;">
+                En la ciudad de Querétaro, Querétaro, siendo las partes plenamente capaces de obligarse, manifiestan su voluntad de celebrar el presente Contrato de Compraventa de Vehículo Nuevo Automotor, sujeto a las siguientes declaraciones y cláusulas, conforme a lo dispuesto por la Norma Oficial Mexicana NOM-160-SCFI-2014 y la Ley Federal de Protección al Consumidor.
+            </p>
+
+            <div class="accordion clausulas-accordion" id="acordeonContrato">
+
+                <!-- ── GLOSARIO ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colGlosario" aria-expanded="true">
+                            <i class="bi bi-book me-2" style="color:#2563eb;"></i> Glosario
+                        </button>
+                    </h2>
+                    <div id="colGlosario" class="accordion-collapse collapse show" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+                            <p><strong>a) Consumidor:</strong> Es la persona física o moral que adquiere en propiedad un vehículo nuevo automotor; a quien, de acuerdo a la naturaleza de este contrato y para los efectos correspondientes en este acto jurídico, se le denominará el comprador o cliente.</p>
+                            <p><strong>b) Proveedor:</strong> Es la persona física o moral que ofrece en venta un vehículo nuevo automotor; a quien, en atención a la naturaleza jurídica de este contrato y para los efectos correspondientes, se le denominará el vendedor o distribuidor.</p>
+                            <p class="mb-0"><strong>c) Vehículo nuevo:</strong> El automotor de procedencia nacional o extranjera, destinado al transporte terrestre de personas y/o de bienes que el proveedor comercializa al consumidor por primera vez, con no más de 1,000 kilómetros recorridos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── DECLARACIONES ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colDeclaraciones" aria-expanded="false">
+                            <i class="bi bi-person-lines-fill me-2" style="color:#2563eb;"></i> Declaraciones
+                        </button>
+                    </h2>
+                    <div id="colDeclaraciones" class="accordion-collapse collapse" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+
+                            <p class="fw-bold mb-2" style="color:#1a3a6b;font-size:.85rem;">I. Declaraciones del Vendedor</p>
+                            <p>
+                                <strong>a)</strong> Ser una persona moral mexicana según consta en la escritura pública número
+                                <span id="dist_escrituraNumero"></span>, de fecha <span id="dist_escrituraFecha"></span>,
+                                exhibida ante la fe del <span id="dist_notarioNombre"></span>, titular de la Notaría número
+                                <span id="dist_notariaNumero"></span>, del <span id="dist_notariaEstado"></span>, e inscrita en el
+                                Registro Público del Comercio de <span id="dist_registroPublico"></span> bajo el número de notaría
+                                <span id="dist_registroNumero"></span> de fecha <span id="dist_registroFecha"></span>, y que su
+                                representante legal acredita su personalidad mediante el testimonio notarial
+                                <span id="dist_testimonio"></span>, ante la fe de <span id="dist_notariaRLNombre"></span> titular
+                                de la Notaria número <span id="dist_notariaRLNumero"></span>, en el Estado de
+                                <span id="dist_notariaRLEstado"></span>.
+                            </p>
+
+                            <p>
+                                <strong>b)</strong> Tener como domicilio convencional el ubicado en
+                                <span id="domicilioDistribuidora2"></span>, con número telefónico
+                                <span id="telefonoDistribuidora2"></span>, con correo electrónico
+                                <input type="email" id="dist_correo" class="form-control form-control-sm d-inline-block"
+                                       style="width:auto;min-width:260px;"
+                                       value="atencionclientes@toyotaqueretaro.mx" />,
+                                identificándose con la credencial para votar con fotografía número
+                                <span id="dist_ine"></span>, expedida por el Instituto Nacional Electoral,
+                                misma que previo cotejo se devuelve a su propietario, exhibiéndose en los
+                                anexos del contrato una copia simple de la misma.
+                            </p>
+                            <p><strong>c)</strong> Que está inscrito en el Registro Federal de Contribuyentes bajo el número: AQU030811UM4 y, en su caso, contar con registro en el Sistema de Información Empresarial Mexicano número:</p>
+                            <p><strong>d)</strong> Que cuenta con las licencias, permisos, avisos y autorizaciones previstos en la legislación nacional para ofrecer el servicio de venta de vehículos nuevos.</p>
+                            <p><strong>e)</strong> Que cuenta con personal capacitado, responsable y dispuesto para atender a los consumidores, en un plazo no mayor a 48 horas.</p>
+                            <p><strong>f)</strong> Que el vehículo nuevo objeto de este contrato cumple íntegramente con las disposiciones legales y Normas Oficiales Mexicanas vigentes en materia de seguridad y protección al medio ambiente para ser comercializado.</p>
+                            <p><strong>g)</strong> Que cuenta con la infraestructura y la capacidad técnica en equipo y mano de obra para proporcionar los servicios de reparación, mantenimiento y garantía en los vehículos nuevos, así como en sus refacciones y accesorios.</p>
+
+                            <hr class="my-3">
+
+                            <p class="fw-bold mb-2" style="color:#1a3a6b;font-size:.85rem;">II. Declaraciones del Comprador</p>
+
+                            <p id="pMoralDeclaracion">
+                                <strong>a) En caso de Persona Moral:</strong>
+                                Ser una persona moral mexicana según consta en la escritura pública número
+                                <span id="decl_escrituraNumero">___</span>,
+                                de fecha
+                                <span id="decl_escrituraFecha">___</span>,
+                                del(a) Lic., Notario Público número
+                                <span id="decl_notariaNumero">___</span>,
+                                en el Estado de
+                                <span id="decl_notariaEstado">___</span>,
+                                e inscrita en el Registro Público del Comercio de
+                                <span id="decl_registroPublico">___</span>
+                                bajo el número
+                                <span id="decl_registroNumero">___</span>
+                                de fecha
+                                <span id="decl_registroDia">___</span>
+                                de
+                                <span id="decl_registroMes">___</span>
+                                de
+                                <span id="decl_registroAnio">___</span>,
+                                y que su representante legal acredita su personalidad mediante el testimonio
+                                notarial número
+                                <span id="decl_testimonioNotarial">___</span>,
+                                exhibida ante la fe del(a) Lic., Notario Público número
+                                <span id="decl_notariaRLNumero">___</span>,
+                                en el Estado de
+                                <span id="decl_notariaRLEstado">___</span>.
+                            </p>
+
+                            <p><strong>b) En caso de Persona Física:</strong> Llamarse como ha quedado anotado en el proemio de este contrato.</p>
+                            <p><strong>c)</strong> Que está inscrito en el Registro Federal de Contribuyentes, bajo el número: <span id="rfcCompradorDeclaracion"></span>.</p>
+                            <p><strong>d)</strong> Que recibió del vendedor toda la información relativa al vehículo materia de este contrato, incluyendo sus especificaciones técnicas y rendimiento de combustible.</p>
+                            <p class="mb-0"><strong>e)</strong> Que recibió del vendedor toda la información relativa a las restricciones que pudieran aplicar, mismas que serán detalladas en la póliza de garantía respectiva.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CLÁUSULAS ── -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#colClausulas" aria-expanded="false">
+                            <i class="bi bi-file-text me-2" style="color:#2563eb;"></i> Cláusulas
+                        </button>
+                    </h2>
+                    <div id="colClausulas" class="accordion-collapse collapse" data-bs-parent="#acordeonContrato">
+                        <div class="accordion-body">
+
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Primera. Objeto del Contrato</p>
+                            <p>En virtud de este contrato, el Distribuidor vende al Cliente (Consumidor) el vehículo cuyas características se detallan en este documento.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Segunda. Equipo Opcional y Accesorios</p>
+                            <p>El vehículo cuenta con el equipo opcional y accesorios adicionales solicitados y autorizados por el Cliente; mismos que se describen en la carátula del presente contrato.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Tercera. Monto Total</p>
+                            <p>El monto total de la compraventa será cubierto íntegramente en la fecha de firma del presente contrato, incluyendo, en su caso, los equipos y accesorios adicionales solicitados y autorizados por el cliente.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Cuarta. Unidad Usada a Cuenta</p>
+                            <p>En caso de que el Cliente entregue un vehículo usado a cuenta del precio, entregará también la documentación correspondiente, sus accesorios y gastos de trámite de "baja", según relación anexa, declarando de manera expresa que dicha documentación es legítima. Asimismo, el Cliente manifiesta que el vehículo está libre de gravamen y no tiene problema judicial y/o administrativo alguno, por lo que en este acto libera al Distribuidor de adeudos o conflictos que por cualquier motivo pudiera presentar dicho vehículo hasta la fecha de su entrega.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Quinta. Garantía</p>
+                            <p>Las partes manifiestan que el vendedor previo a la formalización del contrato de compraventa de vehículo nuevo informó al comprador Consumidor que la garantía no podrá ser inferior a 90 días naturales, y cuya cobertura y mecanismos para hacerla efectiva se especifican en el manual del usuario y póliza de garantía, así como las causas de procedencia o improcedencia de la misma.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Sexta. Servicios Adicionales</p>
+                            <p>Las partes manifiestan que no se hará cargo alguno por servicios adicionales a los pactados en el presente instrumento, sin previo consentimiento del cliente.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Séptima. Documentos que se Entregan con el Vehículo</p>
+                            <p>El Distribuidor entrega junto con el vehículo: (i) la Carta-Factura; (ii) el Manual del Usuario; y (iii) la Póliza de Garantía en idioma español, que contendrá: a) Identificación del vehículo; b) La fecha de entrega del vehículo al consumidor; c) Vigencia, cobertura y mecanismos para hacerla efectiva; d) Los datos de los establecimientos ubicados en la República Mexicana en los que se deberá hacer efectiva la garantía; y e) Los datos de la póliza para hacer efectiva la garantía, debidamente sellada y firmada.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Octava. Reparaciones en Garantía</p>
+                            <p>Ante desperfectos en el vehículo y dentro del plazo de vigencia de la garantía, el consumidor debe acudir ante el distribuidor autorizado para solicitar la reparación del vehículo conforme a la garantía otorgada por el fabricante y/o importador. Si el distribuidor no contara con las refacciones necesarias en un plazo máximo de 60 días naturales, quien haya otorgado la garantía asumirá ante el Cliente los costos por el incumplimiento conforme a la NOM-160-SCFI-2014 y a las políticas convenidas entre el fabricante o importador con el Distribuidor.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Novena. Tiempo de Reparación en Garantía</p>
+                            <p>El tiempo que transcurra desde el momento en que el consumidor solicite la garantía hasta que le sea devuelto el vehículo reparado, no será computado dentro de la vigencia de la misma.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima. Factura Original</p>
+                            <p>El Distribuidor entregará al Cliente la Factura Original dentro de un plazo de 8 días contados a partir de la fecha en la que el Cliente hubiese liquidado el monto de la compraventa.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima Primera. Garantía — Reparación</p>
+                            <p>En caso de que dentro del periodo de garantía el Cliente acuda ante cualquier distribuidor autorizado y este no cuente con las refacciones necesarias en un plazo máximo de 60 días naturales contados a partir de la fecha de presentación del vehículo, quien haya otorgado la garantía asumirá ante el Cliente los costos por el incumplimiento conforme a los términos establecidos en la garantía y en la NOM-160-SCFI-2014.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima Segunda. Revocación del Consentimiento</p>
+                            <p>El cliente podrá revocar su consentimiento, en un plazo de 5 días hábiles mediante aviso personal, correo electrónico, o correo certificado siempre y cuando no le haya sido entregado el vehículo materia del presente contrato.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima Tercera. Causas de Rescisión</p>
+                            <p>Son causas de rescisión del presente contrato: (I) Incumplimiento de los términos del contrato; (II) Que el proveedor no esté en posibilidad de cumplir los compromisos establecidos en la garantía por no contar con las refacciones necesarias en un plazo máximo de 60 días, en cuyo caso el Distribuidor devolverá la cantidad recibida del Cliente en un plazo no mayor de 5 días hábiles a partir de la notificación del incumplimiento; (III) Que el vehículo presente vicios ocultos derivados de la fabricación, importación o ensamble.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima Cuarta. Jurisdicción</p>
+                            <p>Las partes están de acuerdo en someterse a la competencia de la Procuraduría Federal del Consumidor en la vía administrativa para resolver cualquier controversia que se suscite sobre la interpretación o cumplimiento de los términos y condiciones del presente contrato y de las disposiciones de la Ley Federal de Protección al Consumidor y la NOM-160-SCFI-2014, sin perjuicio del derecho que tienen las partes de someterse a la jurisdicción de los Tribunales competentes del domicilio del Distribuidor.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima Quinta. Consentimiento por Medios Electrónicos</p>
+                            <p>Las partes acuerdan que en lugar de una firma original autógrafa, este contrato y cualquier consentimiento u otros documentos relacionados podrán ser firmados mediante el uso de firmas electrónicas, digitales, numéricas, alfanuméricas, huellas de voz, biométricas o de cualquier otro tipo, que serán consideradas con la misma fuerza y consecuencias que la firma autógrafa original física, conforme a la NOM-151-SCFI-2016.</p>
+
+                            <hr class="my-3">
+                            <p class="fw-bold mb-1" style="color:#1a3a6b;">Décima Sexta. Uso de Datos Personales</p>
+
+                            <p class="mb-1">El consumidor</p>
+                            <div class="datos-personales-opciones mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="cesiónDatos" id="cesiónAcepta" value="acepta">
+                                    <label class="form-check-label" for="cesiónAcepta">Acepta</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="cesiónDatos" id="cesiónNoAcepta" value="no acepta">
+                                    <label class="form-check-label" for="cesiónNoAcepta">No acepta</label>
+                                </div>
+                            </div>
+                            <p>que el Vendedor ceda o transmita a terceros, con fines mercadotécnicos o publicitarios, la información proporcionada por él con motivo del presente contrato.</p>
+
+                            <p class="mb-1">El consumidor</p>
+                            <div class="datos-personales-opciones mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="publicidadDatos" id="publicidadAcepta" value="acepta">
+                                    <label class="form-check-label" for="publicidadAcepta">Acepta</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="publicidadDatos" id="publicidadNoAcepta" value="no acepta">
+                                    <label class="form-check-label" for="publicidadNoAcepta">No acepta</label>
+                                </div>
+                            </div>
+                            <p class="mb-0">que el Distribuidor le envíe publicidad sobre bienes y servicios.</p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- fin acordeón -->
+            <!-- ══════ BANNER DECLARACIÓN ══════ -->
+            <div class="contrato-declaracion my-4">
+                El Cliente y el Distribuidor aceptan la realización de la presente compraventa, en los términos establecidos en este contrato, y sabedores de su alcance legal, lo firman por duplicado.
+            </div>
+
+            <!-- ══════ FIRMAS ══════ -->
+            <div class="sec-label">Firmas</div>
+
+            <!-- Firma de autorización del consumidor -->
+            <div class="firma-row">
+                <div class="firma-input">
+                    <div class="form-floating">
+                        <input type="text" readonly class="form-control" id="fic_firmaAutorizacion" name="firmaAutorizacion"
+                               placeholder="Firma de autorización del consumidor">
+                        <label for="fic_firmaAutorizacion">Firma de Autorización del Consumidor</label>
+                    </div>
+                </div>
+                <div class="firma-pad">
+                    <span class="firma-label-top">Firma</span>
+                    <div class="firma-preview" id="pad_firmaAutorizacion" onclick="abrirFirma('firmaAutorizacion')">
+                        <div class="firma-placeholder">
+                            <i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>
+                            Toca para firmar
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill d-none"
+                            id="rehacer_firmaAutorizacion" onclick="rehacerFirma('firmaAutorizacion')">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Rehacer
+                    </button>
+                </div>
+            </div>
+
+            <!-- El Vendedor / El Comprador -->
+            <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                    <div class="info-block-title" style="font-size:.72rem;font-weight:700;color:#1a3a6b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">El Vendedor</div>
+                    <div class="firma-row">
+                        <div class="firma-input">
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control" id="fic_firmaVendedor" name="firmaVendedor"
+                                       placeholder="Nombre del Vendedor">
+                                <label for="fic_firmaVendedor">Denominación / Nombre del Vendedor</label>
+                            </div>
+                        </div>
+                        <div class="firma-pad">
+                            <span class="firma-label-top">Firma</span>
+                            <div class="firma-preview" id="pad_firmaVendedor" onclick="abrirFirma('firmaVendedor')">
+                                <div class="firma-placeholder">
+                                    <i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>
+                                    Toca para firmar
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill d-none"
+                                    id="rehacer_firmaVendedor" onclick="rehacerFirma('firmaVendedor')">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Rehacer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-block-title" style="font-size:.72rem;font-weight:700;color:#1a3a6b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">El Comprador</div>
+                    <div class="firma-row">
+                        <div class="firma-input">
+                            <div class="form-floating">
+                                <input type="text" readonly class="form-control" id="fic_firmaComprador" name="firmaComprador"
+                                       placeholder="Nombre del Comprador">
+                                <label for="fic_firmaComprador">Nombre Completo del Comprador</label>
+                            </div>
+                        </div>
+                        <div class="firma-pad">
+                            <span class="firma-label-top">Firma</span>
+                            <div class="firma-preview" id="pad_firmaComprador" onclick="abrirFirma('firmaComprador')">
+                                <div class="firma-placeholder">
+                                    <i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>
+                                    Toca para firmar
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill d-none"
+                                    id="rehacer_firmaComprador" onclick="rehacerFirma('firmaComprador')">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Rehacer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nota PROFECO -->
+            <div class="info-block mt-3" style="background:#fff8e1;border-color:#fde68a;">
+                <div class="info-block-title" style="color:#92400e;">📌 Nota</div>
+                <p class="mb-0" style="font-size:.82rem;color:#78350f;">
+                    (*) El presente contrato fue registrado en la Procuraduría Federal del Consumidor bajo el número 9826-2023 el día 24 de noviembre de 2023.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ MODAL SHAREPOINT ══════════════════ -->
+<div class="modal fade" id="modalSharePoint" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header" style="background:linear-gradient(135deg,#1a3a6b 0%,#2563eb 100%);color:#fff;border-radius:.375rem .375rem 0 0;">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-cloud-fill me-2"></i>SharePoint — Contrato PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+
+                <!-- Subir PDF -->
+                <p class="sec-label mt-0">Subir PDF generado</p>
+                <p style="font-size:.82rem;color:#64748b;">
+                    Genera primero el PDF y luego súbelo a SharePoint. Se guardará en <code>Contratos/Nuevos/</code>.
+                </p>
+                <button class="btn btn-primary rounded-pill w-100 mb-1" id="btnSubirPDFModal" onclick="subirPDF()">
+                    <i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF
+                </button>
+                <div id="spUploadResult" class="d-none mt-2"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ MODAL FIRMA ══════════════════ -->
+<div class="modal fade" id="modalFirma" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="modalFirmaLabel">Captura tu firma</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 d-flex justify-content-center align-items-center bg-light">
+                <canvas id="firmaCanvas" style="border:1px solid #cbd5e1;background:#fff;touch-action:none;width:100%;height:100%;"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary rounded-pill" id="btnLimpiarFirma">
+                    <i class="bi bi-eraser me-1"></i>Limpiar
+                </button>
+                <button class="btn btn-primary rounded-pill" id="btnConfirmarFirma">
+                    <i class="bi bi-check-lg me-1"></i>Confirmar firma
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    let _sharePointUniqueId = null;
+
+    // ══════════════════════════════════════════════════════
+    // ESTADO SHAREPOINT
+    // ══════════════════════════════════════════════════════
+    const constantesSharePoint = {
+        DRIVE_ID: ``,
+        ACCESS_TOKEN: ``
+    };
+
+    // ══════════════════════════════════════════════════════
+    // ESTADO GENERAL
+    // ══════════════════════════════════════════════════════
+    let ventaIdActual = null;
+
+    // ══════════════════════════════════════════════════════
+    // GENERAR PDF (solo descarga en nueva pestaña)
+    // ══════════════════════════════════════════════════════
+    async function generarPDF() {
+        if (!ventaIdActual) return;
+
+        // Guardar primero
+        await guardarContrato();
+
+        const btn = document.getElementById('btnGenerarPDF');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Generando...';
+
+        window.open(`/ContratoNuevos/GenerarPDFContrato?ventaId=${encodeURIComponent(ventaIdActual)}`, '_blank');
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-file-earmark-pdf-fill me-1"></i>Generar PDF';
+        }, 2000);
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SHAREPOINT — abrir modal
+    // ══════════════════════════════════════════════════════
+    function abrirModalSharePoint() {
+        // Limpiar resultado anterior
+        document.getElementById('spUploadResult').className = 'd-none mt-2';
+        document.getElementById('spUploadResult').innerHTML = '';
+        // Restaurar botón de subida
+        const btn = document.getElementById('btnSubirPDFModal');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF';
+        new bootstrap.Modal(document.getElementById('modalSharePoint')).show();
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SHAREPOINT — generar PDF del servidor y subirlo
+    // ══════════════════════════════════════════════════════
+    async function subirPDF() {
+        if (!ventaIdActual) return;
+
+        const btn = document.getElementById('btnSubirPDFModal');
+        const resultEl = document.getElementById('spUploadResult');
+
+        // ── Guardar antes de subir ──────────────────────────────
+        const guardado = await guardarContrato();
+        if (!guardado) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Subiendo...';
+        resultEl.className = 'd-none mt-2';
+
+        try {
+            const credentials = await sharePointService.generateAccessToken();
+            constantesSharePoint.ACCESS_TOKEN = credentials.access_token;
+            constantesSharePoint.DRIVE_ID     = credentials.driveId;
+
+            const res = await fetch(`/ContratoNuevos/GenerarPDFContrato?ventaId=${encodeURIComponent(ventaIdActual)}`);
+            if (!res.ok) throw new Error(`Error al generar el PDF (${res.status})`);
+            const blob = await res.blob();
+
+            const nombreArchivo = `ContratoNuevos_${ventaIdActual}_${Date.now()}.pdf`;
+            const file = new File([blob], nombreArchivo, { type: 'application/pdf' });
+
+            const resultado = await sharePointService.uploadFile(file, 'Contratos/Nuevos');
+
+            // ── Guardar UniqueId y persistir ───────────────────
+            _sharePointUniqueId = resultado.uniqueId;
+            await guardarContrato();
+
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `
+                <div class="alert alert-success py-2 mb-0" style="font-size:.82rem;">
+                    <div class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-1"></i>PDF subido correctamente</div>
+                    <div class="mb-1">
+                        <span class="text-muted">UniqueId:</span>
+                        <code class="user-select-all">${resultado.uniqueId}</code>
+                    </div>
+                    <a href="${resultado.url}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill mt-1">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF
+                    </a>
+                </div>`;
+
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Subido';
+
+        } catch (e) {
+            console.error('[SP] Error en subirPDF:', e);
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size:.82rem;">${e.message || 'Error inesperado.'}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Generar y subir PDF';
+        }
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SHAREPOINT — buscar PDF por UniqueId (panel de búsqueda)
+    // ══════════════════════════════════════════════════════
+    async function buscarPorUniqueId() {
+        const uniqueId = document.getElementById('inputUniqueId').value.trim();
+        const resultEl = document.getElementById('spBuscarResult');
+        const btn = document.getElementById('btnBuscarUniqueId');
+
+        if (!uniqueId) {
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-warning py-2 mb-0" style="font-size:.82rem;">Ingresa un UniqueId.</div>`;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        resultEl.className = 'd-none mt-2';
+
+        try {
+            // Token fresco si no existe
+            if (!constantesSharePoint.ACCESS_TOKEN || !constantesSharePoint.DRIVE_ID) {
+                console.log('[SP] Solicitando token para búsqueda...');
+                const credentials = await sharePointService.generateAccessToken();
+                constantesSharePoint.ACCESS_TOKEN = credentials.access_token;
+                constantesSharePoint.DRIVE_ID = credentials.driveId;
+                console.log('[SP] Token recibido:', credentials);
+            }
+
+            console.log('[SP] Buscando UniqueId:', uniqueId);
+            const data = await sharePointService.getFilePublicUrl(uniqueId);
+            console.log('[SP] Resultado getFilePublicUrl:', data);
+            const url = data['@@microsoft.graph.downloadUrl'];
+
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `
+                <div class="alert alert-success py-2 mb-0" style="font-size:.82rem;">
+                    <div class="fw-bold mb-1"><i class="bi bi-file-earmark-pdf-fill me-1"></i>Archivo encontrado</div>
+                    <div class="text-truncate mb-1">
+                        <span class="text-muted">Nombre:</span> ${data.name ?? '—'}
+                    </div>
+                    <a href="${url}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill mt-1">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Abrir PDF
+                    </a>
+                </div>`;
+
+        } catch (e) {
+            console.error('[SP] Error en buscarPorUniqueId:', e);
+            resultEl.className = 'mt-2';
+            resultEl.innerHTML = `<div class="alert alert-danger py-2 mb-0" style="font-size:.82rem;">No se encontró el archivo o el UniqueId es inválido.</div>`;
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search"></i>';
+        }
+    }
+
+    function volverBusqueda() {
+        document.getElementById('contratoWrapper').classList.add('d-none');
+        document.getElementById('busquedaPanel').classList.remove('d-none');
+        document.getElementById('inputVentaId').value = '';
+        document.getElementById('busquedaError').classList.add('d-none');
+
+        // Limpiar distribuidora
+        ['denominacion', 'rfcDistribuidora', 'domicilioDistribuidora', 'telefonoDistribuidora', 'localidadEntrega']
+            .forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = '';
+            });
+
+        // Limpiar RFC en declaraciones
+        const rfcDecl = document.getElementById('rfcCompradorDeclaracion');
+        if (rfcDecl) rfcDecl.textContent = '';
+
+        // Limpiar spans de Persona Moral
+        [
+            'decl_escrituraNumero', 'decl_escrituraFecha', 'decl_notariaNumero',
+            'decl_notariaEstado',   'decl_registroPublico','decl_registroNumero',
+            'decl_registroDia',     'decl_registroMes',    'decl_registroAnio',
+            'decl_testimonioNotarial','decl_notariaRLNumero','decl_notariaRLEstado'
+        ].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '___';
+        });
+
+        // Resetear radios de datos personales
+        document.querySelectorAll('input[name="cesiónDatos"], input[name="publicidadDatos"]')
+            .forEach(r => r.checked = false);
+
+        // Resetear botón PDF
+        const btn = document.getElementById('btnGenerarPDF');
+        btn.disabled = false;
+        btn.className = 'btn btn-primary btn-sm rounded-pill';
+        btn.innerHTML = '<i class="bi bi-file-earmark-pdf-fill me-1"></i>Generar PDF';
+
+        // Resetear botón SharePoint
+        const btnSP = document.getElementById('btnSubirSharePoint');
+        btnSP.disabled = false;
+        btnSP.className = 'btn btn-info btn-sm rounded-pill text-white';
+        btnSP.innerHTML = '<i class="bi bi-cloud-upload-fill me-1"></i>Subir a SharePoint';
+        _sharePointUniqueId = null;
+
+    }
+
+    function mostrarError(msg) {
+        const el = document.getElementById('busquedaError');
+        el.textContent = msg;
+        el.classList.remove('d-none');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // BÚSQUEDA
+    // ══════════════════════════════════════════════════════
+    async function buscarVenta() {
+        const id = document.getElementById('inputVentaId').value.trim();
+        if (!id) return mostrarError('Ingresa un ID de venta.');
+
+        const btn = document.getElementById('btnBuscar');
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`/ContratoNuevos/ObtenerDatosContrato?ventaId=${encodeURIComponent(id)}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.mensaje || 'Error desconocido');
+            }
+
+            ventaIdActual = id;
+            llenarCampos(data);
+
+            document.getElementById('busquedaPanel').classList.add('d-none');
+            document.getElementById('contratoWrapper').classList.remove('d-none');
+
+        } catch (e) {
+            mostrarError(e.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-search me-2"></i>Cargar Contrato';
+        }
+    }
+
+    async function guardarContrato() {
+        if (!ventaIdActual) return false;
+
+        const getFirmaBase64 = (nombre) => {
+            const img = document.querySelector(`#pad_${nombre} img`);
+            return img ? img.src : null;
+        };
+
+        const payload = {
+            idVenta:             parseInt(ventaIdActual),
+            fechaEntrega:        document.getElementById('fechaEntrega').value || null,
+            cesionDatos:         document.querySelector('input[name="cesiónDatos"]:checked')?.value === 'acepta' ? true
+                               : document.querySelector('input[name="cesiónDatos"]:checked')?.value === 'no acepta' ? false
+                               : null,
+            publicidadDatos:     document.querySelector('input[name="publicidadDatos"]:checked')?.value === 'acepta' ? true
+                               : document.querySelector('input[name="publicidadDatos"]:checked')?.value === 'no acepta' ? false
+                               : null,
+            firmaAutorizacion:   getFirmaBase64('firmaAutorizacion'),
+            firmaVendedor:       getFirmaBase64('firmaVendedor'),
+            firmaComprador:      getFirmaBase64('firmaComprador'),
+            correoDistribuidora: document.getElementById('dist_correo')?.value ?? '',
+            sharePointUniqueId:  _sharePointUniqueId  // variable global, ver abajo
+        };
+
+        const btn = document.querySelector('button[onclick="guardarContrato()"]');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
+
+        try {
+            const res = await fetch('/ContratoNuevos/GuardarContrato', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error(`Error al guardar (${res.status}).`);
+
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Guardado';
+            btn.classList.replace('btn-success', 'btn-outline-success');
+            return true;
+
+        } catch (e) {
+            alert(e.message || 'Error inesperado al guardar.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-floppy-fill me-1"></i>Guardar';
+            return false;
+        }
+    }
+
+    // ══════════════════════════════════════════════════════
+    // LLENAR CAMPOS CON DTO
+    // ══════════════════════════════════════════════════════
+    function llenarCampos(dto) {
+        document.querySelectorAll('#contratoWrapper input[readonly], #contratoWrapper textarea[readonly]')
+            .forEach(el => { el.value = ''; });
+
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val != null && val !== '') el.value = val;
+        };
+
+        const setText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val != null && val !== '') el.textContent = val;
+        };
+
+        // Distribuidora — general
+        setText('denominacion',            dto.denominacion);
+        setText('rfcDistribuidora',        dto.rfc);
+        setText('domicilioDistribuidora',  dto.domicilio);
+        setText('telefonoDistribuidora',   dto.telefono);
+        setText('localidadEntrega',        dto.localidad);
+        setText('domicilioDistribuidora2', dto.domicilio);
+        setText('telefonoDistribuidora2',  dto.telefono);
+
+        // Correo distribuidora — respeta el guardado, si no mantiene el default del input
+        const elCorreo = document.getElementById('dist_correo');
+        if (elCorreo && dto.correoDistribuidora) elCorreo.value = dto.correoDistribuidora;
+        const elCorreoHeader = document.getElementById('dist_correo_header');
+        if (elCorreoHeader) elCorreoHeader.textContent = elCorreo?.value ?? 'atencionclientes@toyotaqueretaro.mx';
+
+        // Distribuidora — Persona Moral (inciso a)
+        setText('dist_escrituraNumero',  dto.distribuidoraEscrituraNumero);
+        setText('dist_escrituraFecha',   dto.distribuidoraEscrituraFecha);
+        setText('dist_notarioNombre',    dto.distribuidoraNotarioNombre);
+        setText('dist_notariaNumero',    dto.distribuidoraNotariaNumero);
+        setText('dist_notariaEstado',    dto.distribuidoraNotariaEstado);
+        setText('dist_registroPublico',  dto.distribuidoraRegistroPublico);
+        setText('dist_registroNumero',   dto.distribuidoraRegistroNumero);
+        setText('dist_registroFecha',    dto.distribuidoraRegistroFecha);
+        setText('dist_notariaRLNombre',  dto.distribuidoraNotariaRLNombre);
+        setText('dist_notariaRLNumero',  dto.distribuidoraNotariaRLNumero);
+        setText('dist_notariaRLEstado',  dto.distribuidoraNotariaRLEstado);
+        setText('dist_testimonio',       dto.distribuidoraTestimonio);
+        setText('dist_representante',    dto.distribuidoraRepresentante);
+        setText('dist_ine',              dto.distribuidoraIne);
+
+        // RFC en declaraciones del comprador
+        setText('rfcCompradorDeclaracion', dto.rfcCliente);
+
+        // ── Persona Moral — Inciso a) Declaraciones del Comprador ──
+        setText('decl_escrituraNumero',    dto.escrituraNumero);
+        setText('decl_escrituraFecha',     dto.escrituraFecha);
+        setText('decl_notariaNumero',      dto.notariaNumero);
+        setText('decl_notariaEstado',      dto.notariaEstado);
+        setText('decl_registroPublico',    dto.registroPublico);
+        setText('decl_registroNumero',     dto.registroNumero);
+        setText('decl_registroDia',        dto.registroDia);
+        setText('decl_registroMes',        dto.registroMes);
+        setText('decl_registroAnio',       dto.registroAnio);
+        setText('decl_testimonioNotarial', dto.testimonioNotarial);
+        setText('decl_notariaRLNumero',    dto.notariaRLNumero);
+        setText('decl_notariaRLEstado',    dto.notariaRLEstado);
+
+        // Cliente
+        set('nombreCliente',    dto.nombreCliente);
+        set('rfcCliente',       dto.rfcCliente);
+        set('calleCliente',     dto.calle);
+        set('extCliente',       dto.numExt);
+        set('intCliente',       dto.numInt);
+        set('coloniaCliente',   dto.colonia);
+        set('cpCliente',        dto.codigoPostal);
+        set('municipioCliente', dto.delegacion);
+        set('estadoCliente',    dto.estado);
+        set('telefonoCliente',  dto.telefonos);
+        set('emailCliente',     dto.correo);
+        set('folio',            dto.folio);
+
+        // Vehículo
+        set('marca',        dto.marca);
+        set('submarca',     dto.submarca);
+        set('tipoVersion',  dto.tipoVersion);
+        set('color',        dto.color);
+        set('anioModelo',   dto.anioModelo);
+        set('niv',          dto.niv);
+        set('catalogo',     dto.catalogo);
+        set('capacidad',    dto.capacidad);
+        set('fechaEntrega', dto.fechaEntrega);
+        set('lugarEntrega', dto.lugarEntrega);
+
+        // Monto
+        set('precioVehiculo', dto.precioVehiculo);
+        set('precioEquipo',   dto.equipo);
+        set('otrosCargos',    dto.otrosCargos);
+        set('iva',            dto.iva);
+        set('montoTotal',     dto.montoTotal);
+        set('pagoContado',    dto.pagoContado);
+        set('enganche',       dto.enganche ?? '$0.00');
+
+        // Firmas (inputs de texto)
+        set('fic_firmaAutorizacion', dto.nombreCliente);
+        set('fic_firmaVendedor',     dto.denominacion);
+        set('fic_firmaComprador',    dto.nombreCliente);
+        set('fechaContrato',         dto.fecha);
+
+        // Unidad usada
+        set('usadaNiv',      dto.usadaNiv);
+        set('usadaMarca',    dto.usadaMarca);
+        set('usadaSubmarca', dto.usadaSubmarca);
+        set('usadaVersion',  dto.usadaVersion);
+        set('usadaColor',    dto.usadaColor);
+        set('usadaAnio',     dto.usadaAnio);
+        set('usadaValor',    dto.usadaValor);
+
+        // Monto total visible en el highlight
+        const spanMonto = document.getElementById('montoTotal');
+        if (spanMonto && dto.montoTotal) spanMonto.textContent = dto.montoTotal;
+
+        // Radios de datos personales
+        if (dto.cesionDatos !== null && dto.cesionDatos !== undefined) {
+            const val = dto.cesionDatos ? 'acepta' : 'no acepta';
+            const radio = document.querySelector(`input[name="cesiónDatos"][value="${val}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        if (dto.publicidadDatos !== null && dto.publicidadDatos !== undefined) {
+            const val = dto.publicidadDatos ? 'acepta' : 'no acepta';
+            const radio = document.querySelector(`input[name="publicidadDatos"][value="${val}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        // Firmas guardadas (previews)
+        const cargarFirma = (nombre, base64) => {
+            if (!base64) return;
+            const padEl = document.getElementById(`pad_${nombre}`);
+            const rehEl = document.getElementById(`rehacer_${nombre}`);
+            if (!padEl) return;
+            padEl.innerHTML = `<img src="${base64}" alt="Firma" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+            padEl.onclick = null;
+            padEl.style.cursor = 'default';
+            padEl.style.borderStyle = 'solid';
+            padEl.style.borderColor = '#22c55e';
+            if (rehEl) rehEl.classList.remove('d-none');
+        };
+
+        cargarFirma('firmaAutorizacion', dto.firmaAutorizacion);
+        cargarFirma('firmaVendedor',     dto.firmaVendedor);
+        cargarFirma('firmaComprador',    dto.firmaComprador);
+        _sharePointUniqueId = dto.sharePointUniqueId ?? null;
+
+    }
+
+    // ══════════════════════════════════════════════════════
+    // SIGNATURE PAD — idéntico al FIC
+    // ══════════════════════════════════════════════════════
+    let signaturePad = null;
+    let firmaActual  = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initFirmaModal(); // ← faltaba esta línea
+
+        const params = new URLSearchParams(window.location.search);
+        const ventaId = params.get('ventaId');
+        if (ventaId) {
+            document.getElementById('inputVentaId').value = ventaId;
+            buscarVenta();
+        }
+    });
+
+    function initFirmaModal() {
+        const canvas  = document.getElementById('firmaCanvas');
+        const modalEl = document.getElementById('modalFirma');
+
+        signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255,255,255)',
+            penColor: 'rgb(15, 23, 42)'
+        });
+
+        modalEl.addEventListener('shown.bs.modal', () => {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width  = canvas.offsetWidth  * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext('2d').scale(ratio, ratio);
+            signaturePad.clear();
+        });
+
+        document.getElementById('btnLimpiarFirma').addEventListener('click', () => {
+            signaturePad.clear();
+        });
+
+        document.getElementById('btnConfirmarFirma').addEventListener('click', () => {
+            if (signaturePad.isEmpty()) {
+                alert('Por favor dibuja tu firma antes de confirmar.');
+                return;
+            }
+            const dataUrl = signaturePad.toDataURL('image/png');
+            guardarFirmaEnPreview(firmaActual, dataUrl);
+            bootstrap.Modal.getInstance(modalEl).hide();
+        });
+    }
+
+    function abrirFirma(nombre) {
+        firmaActual = nombre;
+        const label = document.querySelector(`label[for="fic_${nombre}"]`)?.textContent || nombre;
+        document.getElementById('modalFirmaLabel').textContent = `Firma — ${label}`;
+        new bootstrap.Modal(document.getElementById('modalFirma')).show();
+    }
+
+    function guardarFirmaEnPreview(nombre, dataUrl) {
+        const padEl = document.getElementById(`pad_${nombre}`);
+        const rehEl = document.getElementById(`rehacer_${nombre}`);
+        if (!padEl) return;
+        padEl.innerHTML = `<img src="${dataUrl}" alt="Firma" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+        padEl.onclick = null;
+        padEl.style.cursor = 'default';
+        padEl.style.borderStyle = 'solid';
+        padEl.style.borderColor = '#22c55e';
+        if (rehEl) rehEl.classList.remove('d-none');
+    }
+
+    function rehacerFirma(nombre) {
+        const padEl = document.getElementById(`pad_${nombre}`);
+        const rehEl = document.getElementById(`rehacer_${nombre}`);
+        padEl.innerHTML = `
+            <div class="firma-placeholder">
+                <i class="bi bi-pen d-block mb-1" style="font-size:1.2rem;"></i>
+                Toca para firmar
+            </div>`;
+        padEl.onclick = () => abrirFirma(nombre);
+        padEl.style.cursor = 'pointer';
+        padEl.style.borderStyle = 'dashed';
+        padEl.style.borderColor = '#cbd5e1';
+        if (rehEl) rehEl.classList.add('d-none');
+    }
+</script>
+
+<script src="~/js/librerias/sharepoint.js"></script>
+<script src="~/js/helpers/utils.js"></script>
+<script src="~/js/signature/signature_pad.umd.min.js"></script>

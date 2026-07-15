@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Contratos de Adhesión";
+    string? contratoUrl = ViewBag.ContratoUrl;
+    string? contratoTitulo = ViewBag.ContratoTitulo;
+}
+
+@if (contratoUrl != null)
+{
+    <div class="modal fade" id="modalContrato" tabindex="-1" aria-hidden="true"
+         data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content border-0">
+                <div class="modal-body p-0" style="overflow:hidden;">
+                    <iframe src="@contratoUrl"
+                            style="width:100%;height:100%;border:none;">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            new bootstrap.Modal(document.getElementById('modalContrato')).show();
+        });
+    </script>
+}
