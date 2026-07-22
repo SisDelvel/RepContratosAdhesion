@@ -15,10 +15,14 @@ namespace Contratos_Adhesion.Controllers
     public class ContratoServicioController : Controller
     {
         private readonly IRepositorioContratoServicio _repositorio;
+        private readonly IRepositorioOperDocumentos _operDocumentosRepositorio; 
 
-        public ContratoServicioController(IRepositorioContratoServicio repositorio)
+        public ContratoServicioController(
+            IRepositorioContratoServicio repositorio,
+            IRepositorioOperDocumentos operDocumentosRepositorio)
         {
             _repositorio = repositorio;
+            _operDocumentosRepositorio = operDocumentosRepositorio;
         }
 
         public IActionResult Index() => View();
@@ -1709,6 +1713,31 @@ namespace Contratos_Adhesion.Controllers
             5 => "NISSAN.png",    // Nivil
             _ => "Toyota.jpg"
         };
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarDocumentoOper([FromBody] GuardarDocumentoOperDto dto)
+        {
+            if (dto == null || dto.IdVenta <= 0 || string.IsNullOrWhiteSpace(dto.IdSharePoint))
+                return BadRequest(new { mensaje = "Datos de documento inválidos." });
+
+            try
+            {
+                var negocio = HttpContext.Session.GetInt32("Negocio") ?? 1;
+
+                var ventaMov = await _repositorio.ObtenerMovVentaAsync(dto.IdVenta.ToString(), negocio);
+                if (ventaMov == null)
+                    return NotFound(new { mensaje = $"No se encontró la orden con ID: {dto.IdVenta}" });
+
+                await _operDocumentosRepositorio.GuardarDocumentoAsync(
+                    dto, ventaMov.Mov, ventaMov.MovId, "Contrato Adhesion");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al guardar el documento.", detalle = ex.Message });
+            }
+        }
 
     }
 }

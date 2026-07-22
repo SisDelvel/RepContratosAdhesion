@@ -15,11 +15,14 @@ namespace Contratos_Adhesion.Controllers
     public class ContratoNuevosController : Controller
     {
         private readonly IRepositorioContratoNuevos repositorio;
+        private readonly IRepositorioOperDocumentos operDocumentosRepositorio;
 
-
-        public ContratoNuevosController(IRepositorioContratoNuevos repositorio)
+        public ContratoNuevosController(
+            IRepositorioContratoNuevos repositorio,
+            IRepositorioOperDocumentos operDocumentosRepositorio)
         {
             this.repositorio = repositorio;
+            this.operDocumentosRepositorio = operDocumentosRepositorio;
         }
 
 
@@ -618,6 +621,31 @@ namespace Contratos_Adhesion.Controllers
             {
                 // En caso de que el string no sea un Base64 válido
                 return null;
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarDocumentoOper([FromBody] GuardarDocumentoOperDto dto)
+        {
+            if (dto == null || dto.IdVenta <= 0 || string.IsNullOrWhiteSpace(dto.IdSharePoint))
+                return BadRequest(new { mensaje = "Datos de documento inválidos." });
+
+            try
+            {
+                var negocio = HttpContext.Session.GetInt32("Negocio") ?? 1;
+
+                var ventaMov = await repositorio.ObtenerMovVentaAsync(dto.IdVenta.ToString(), negocio);
+                if (ventaMov == null)
+                    return NotFound(new { mensaje = $"La venta con ID {dto.IdVenta} no existe." });
+
+                await operDocumentosRepositorio.GuardarDocumentoAsync(
+                    dto, ventaMov.Mov, ventaMov.MovId, "Contrato Adhesion");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al guardar el documento.", detalle = ex.Message });
             }
         }
 

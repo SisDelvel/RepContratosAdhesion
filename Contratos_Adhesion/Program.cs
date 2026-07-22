@@ -10,6 +10,8 @@ builder.Services.AddScoped<Contratos_Adhesion.Services.IRepositorioContratoSemin
                             Contratos_Adhesion.Services.RepositorioContratoSeminuevos>();
 builder.Services.AddScoped<Contratos_Adhesion.Services.IRepositorioContratoServicio,
                             Contratos_Adhesion.Services.RepositorioContratoServicio>();
+builder.Services.AddScoped<Contratos_Adhesion.Services.IRepositorioOperDocumentos,
+                            Contratos_Adhesion.Services.RepositorioOperDocumentos>();
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

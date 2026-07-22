@@ -1133,7 +1133,6 @@
 
 <script>
     let ventaIdActual       = null;
-    let _sharePointUniqueId = null;
 
     const constantesSharePoint = { DRIVE_ID: '', ACCESS_TOKEN: '' };
 
@@ -1184,7 +1183,20 @@
 
             const resultado = await sharePointService.uploadFile(file, 'Contratos/Servicio');
 
-            _sharePointUniqueId = resultado.uniqueId;
+            // ── Guardar metadata del documento en el nuevo modelo (tablas Oper) ──
+            await fetch('/ContratoServicio/GuardarDocumentoOper', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({
+                    idVenta:      parseInt(ventaIdActual),
+                    archivo:      resultado.nombre,
+                    url:          resultado.url,
+                    idSharePoint: resultado.uniqueId,
+                    mimeType:     'pdf',
+                    tamano:       resultado.tamano
+                })
+            });
+
             await guardarContrato();
 
             resultEl.className = 'mt-2';
@@ -1266,7 +1278,6 @@
         document.getElementById('busquedaPanel').classList.remove('d-none');
         document.getElementById('inputVentaId').value = '';
         document.getElementById('busquedaError').classList.add('d-none');
-        _sharePointUniqueId = null;
     }
 
     function mostrarError(msg) {
@@ -1328,7 +1339,6 @@
 
         const payload = {
             idVenta: parseInt(ventaIdActual),
-            sharePointUniqueId: _sharePointUniqueId,
 
             invTapetes:        chk('invTapetes'),
             invCeniceros:      chk('invCeniceros'),
@@ -1683,7 +1693,6 @@
         }
 
         // Restaurar UniqueId guardado
-        _sharePointUniqueId = dto.sharePointUniqueId ?? null;
     }
 
     // ══════════════════════════════════════════════════════

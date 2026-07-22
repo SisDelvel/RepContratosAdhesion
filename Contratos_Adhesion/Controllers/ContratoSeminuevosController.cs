@@ -15,10 +15,14 @@ namespace Contratos_Adhesion.Controllers
     public class ContratoSeminuevosController : Controller
     {
         private readonly IRepositorioContratoSeminuevos _repositorio;
+        private readonly IRepositorioOperDocumentos _operDocumentosRepositorio;
 
-        public ContratoSeminuevosController(IRepositorioContratoSeminuevos repositorio)
+        public ContratoSeminuevosController(
+            IRepositorioContratoSeminuevos repositorio,
+            IRepositorioOperDocumentos operDocumentosRepositorio)
         {
             _repositorio = repositorio;
+            _operDocumentosRepositorio = operDocumentosRepositorio;
         }
 
         public IActionResult Index() => View();
@@ -476,6 +480,31 @@ namespace Contratos_Adhesion.Controllers
                 }
             });
             col.Item().Height(5);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarDocumentoOper([FromBody] GuardarDocumentoOperDto dto)
+        {
+            if (dto == null || dto.IdVenta <= 0 || string.IsNullOrWhiteSpace(dto.IdSharePoint))
+                return BadRequest(new { mensaje = "Datos de documento inválidos." });
+
+            try
+            {
+                var negocio = HttpContext.Session.GetInt32("Negocio") ?? 1;
+
+                var ventaMov = await _repositorio.ObtenerMovVentaAsync(dto.IdVenta.ToString(), negocio);
+                if (ventaMov == null)
+                    return NotFound(new { mensaje = $"La venta con ID {dto.IdVenta} no existe." });
+
+                await _operDocumentosRepositorio.GuardarDocumentoAsync(
+                    dto, ventaMov.Mov, ventaMov.MovId, "Contrato Adhesion");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al guardar el documento.", detalle = ex.Message });
+            }
         }
     }
 }

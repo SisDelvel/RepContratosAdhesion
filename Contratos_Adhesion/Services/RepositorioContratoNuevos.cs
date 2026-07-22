@@ -10,6 +10,7 @@ namespace Contratos_Adhesion.Services
         Task<ContratoDto?> ObtenerDatosContratoAsync(string ventaId, int negocio);
         Task GuardarContratoAsync(GuardarContratoNuevoDto dto, int negocio);
         Task<string?> ObtenerTipoContratoAsync(string idVenta, int negocio);
+        Task<VentaMovDto?> ObtenerMovVentaAsync(string ventaId, int negocio); // ← nuevo
     }
 
     public class RepositorioContratoNuevos : IRepositorioContratoNuevos
@@ -274,5 +275,16 @@ namespace Contratos_Adhesion.Services
 
         private static string FormatearMoneda(decimal? valor) =>
             valor.HasValue ? valor.Value.ToString("C", new System.Globalization.CultureInfo("es-MX")) : "$0.00";
+
+        public async Task<VentaMovDto?> ObtenerMovVentaAsync(string ventaId, int negocio)
+        {
+            if (!int.TryParse(ventaId, out int idVenta))
+                return null;
+
+            const string sql = "SELECT TOP 1 Mov, MovID AS MovId FROM Venta WHERE Id = @Id";
+
+            using var conn = _factory.Create(negocio);
+            return await conn.QueryFirstOrDefaultAsync<VentaMovDto>(sql, new { Id = idVenta });
+        }
     }
 }

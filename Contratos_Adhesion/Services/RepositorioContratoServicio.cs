@@ -9,6 +9,7 @@ namespace Contratos_Adhesion.Services
     {
         Task<ContratoServicioDto?> ObtenerDatosOrdenServicioAsync(string ventaId, int negocio);
         Task GuardarContratoAsync(GuardarContratoServicioDto dto, int negocio);
+        Task<VentaMovDto?> ObtenerMovVentaAsync(string ventaId, int negocio);
     }
 
     public class RepositorioContratoServicio : IRepositorioContratoServicio
@@ -134,38 +135,37 @@ WHERE v.Id = @VentaId
   AND (vd.Cantidad - ISNULL(vd.CantidadCancelada, 0)) > 0";
 
             const string sqlFirmas = @"
-SELECT
-    InvTapetes, InvCeniceros, InvBocinas, InvInstrumentos, InvEncendedores,
-    InvRadio, InvClaxon, InvAC, InvRetrovisor, InvManijas, InvVestiduras,
-    InvCinturones, InvManualProp, InvCarnetServicio,
-    InvTarjetaCirculacion, InvPolizaSeguro, InvVerificacion, InvAlfombradoCaj,
-    InvLlantaRefaccion, InvTriangulos, InvExtintor, InvCablesBateria,
-    InvGato, InvHerramientas, InvBotiquin, InvRedProtectora, InvBirloSeguridad,
-    ExtCristales, ExtLimpiadores, ExtTapones, ExtFarosNiebla, ExtAntena,
-    ExtTaponGas, ExtMolduras, ExtEspejos, ExtFarosDelanteros, ExtLucesTraseras, ExtGolpes,
-    TestLlantas, TestCheckEngine, TestVscrack, TestPresionAceite,
-    TestControlEstabilidad, TestBolsasAire, TestBateria, TestTemperatura,
-    NivelGasolina,
-    C5ExtLimpiaparabrisas, C5ExtLuces, C5ExtAntena, C5ExtEspejos, C5ExtCristales,
-    C5ExtTapones, C5ExtMolduras, C5ExtTaponGas, C5ExtClaxon,
-    C5IntInstrumentos, C5IntCalefaccion, C5IntAire, C5IntRadio, C5IntBocinas,
-    C5IntEncendedor, C5IntEspejoRet, C5IntCeniceros, C5IntCinturones, C5IntTapetes,
-    C5IntManijas, C5IntEquipoAd, C5IntAccesorios, C5IntAditamentos, C5IntOtros,
-    SinGarantia, ConGarantia,
-    FirmaDistribuidor, FirmaCliente, FirmaExtra,
-    PartesEntregaSi, PartesEntregaNo, PartesGarantia, PartesResiduos,
-    ServicioDomicilioSi, ServicioDomicilioNo, PolizaSeguros, PolizaNoSeguros,
-    DeseaContacto,
-    Anticipo, Conductor, MedioContacto, TelContacto, FechaDofu, Katashiki, SharePointUniqueId
-FROM ContratoServicioFirma
-WHERE IdVenta = @VentaId";
-
+            SELECT
+                InvTapetes, InvCeniceros, InvBocinas, InvInstrumentos, InvEncendedores,
+                InvRadio, InvClaxon, InvAC, InvRetrovisor, InvManijas, InvVestiduras,
+                InvCinturones, InvManualProp, InvCarnetServicio,
+                InvTarjetaCirculacion, InvPolizaSeguro, InvVerificacion, InvAlfombradoCaj,
+                InvLlantaRefaccion, InvTriangulos, InvExtintor, InvCablesBateria,
+                InvGato, InvHerramientas, InvBotiquin, InvRedProtectora, InvBirloSeguridad,
+                ExtCristales, ExtLimpiadores, ExtTapones, ExtFarosNiebla, ExtAntena,
+                ExtTaponGas, ExtMolduras, ExtEspejos, ExtFarosDelanteros, ExtLucesTraseras, ExtGolpes,
+                TestLlantas, TestCheckEngine, TestVscrack, TestPresionAceite,
+                TestControlEstabilidad, TestBolsasAire, TestBateria, TestTemperatura,
+                NivelGasolina,
+                C5ExtLimpiaparabrisas, C5ExtLuces, C5ExtAntena, C5ExtEspejos, C5ExtCristales,
+                C5ExtTapones, C5ExtMolduras, C5ExtTaponGas, C5ExtClaxon,
+                C5IntInstrumentos, C5IntCalefaccion, C5IntAire, C5IntRadio, C5IntBocinas,
+                C5IntEncendedor, C5IntEspejoRet, C5IntCeniceros, C5IntCinturones, C5IntTapetes,
+                C5IntManijas, C5IntEquipoAd, C5IntAccesorios, C5IntAditamentos, C5IntOtros,
+                SinGarantia, ConGarantia,
+                FirmaDistribuidor, FirmaCliente, FirmaExtra,
+                PartesEntregaSi, PartesEntregaNo, PartesGarantia, PartesResiduos,
+                ServicioDomicilioSi, ServicioDomicilioNo, PolizaSeguros, PolizaNoSeguros,
+                DeseaContacto,
+                Anticipo, Conductor, MedioContacto, TelContacto, FechaDofu, Katashiki
+            FROM ContratoServicioFirma
+            WHERE IdVenta = @VentaId";
             const string sqlDanos = @"
 SELECT IdTipoDano, CoordX, CoordY
 FROM ContratoServicio_Dano
 WHERE IdVenta = @VentaId";
 
-            using var conn = _factory.Create(negocio); // ← único cambio aquí
+            using var conn = _factory.Create(negocio);
 
             var dto = await conn.QueryFirstOrDefaultAsync<ContratoServicioDto>(sqlPrincipal, new { VentaId = idVenta });
             if (dto is null) return null;
@@ -287,97 +287,95 @@ WHERE IdVenta = @VentaId";
         public async Task GuardarContratoAsync(GuardarContratoServicioDto dto, int negocio)
         {
             const string sqlFirma = @"
-IF EXISTS (SELECT 1 FROM ContratoServicioFirma WHERE IdVenta = @IdVenta)
-    UPDATE ContratoServicioFirma SET
-        InvTapetes = @InvTapetes, InvCeniceros = @InvCeniceros, InvBocinas = @InvBocinas,
-        InvInstrumentos = @InvInstrumentos, InvEncendedores = @InvEncendedores, InvRadio = @InvRadio,
-        InvClaxon = @InvClaxon, InvAC = @InvAC, InvRetrovisor = @InvRetrovisor,
-        InvManijas = @InvManijas, InvVestiduras = @InvVestiduras, InvCinturones = @InvCinturones,
-        InvManualProp = @InvManualProp, InvCarnetServicio = @InvCarnetServicio,
-        InvTarjetaCirculacion = @InvTarjetaCirculacion, InvPolizaSeguro = @InvPolizaSeguro,
-        InvVerificacion = @InvVerificacion, InvAlfombradoCaj = @InvAlfombradoCaj,
-        InvLlantaRefaccion = @InvLlantaRefaccion, InvTriangulos = @InvTriangulos,
-        InvExtintor = @InvExtintor, InvCablesBateria = @InvCablesBateria,
-        InvGato = @InvGato, InvHerramientas = @InvHerramientas, InvBotiquin = @InvBotiquin,
-        InvRedProtectora = @InvRedProtectora, InvBirloSeguridad = @InvBirloSeguridad,
-        ExtCristales = @ExtCristales, ExtLimpiadores = @ExtLimpiadores, ExtTapones = @ExtTapones,
-        ExtFarosNiebla = @ExtFarosNiebla, ExtAntena = @ExtAntena, ExtTaponGas = @ExtTaponGas,
-        ExtMolduras = @ExtMolduras, ExtEspejos = @ExtEspejos, ExtFarosDelanteros = @ExtFarosDelanteros,
-        ExtLucesTraseras = @ExtLucesTraseras, ExtGolpes = @ExtGolpes,
-        TestLlantas = @TestLlantas, TestCheckEngine = @TestCheckEngine, TestVscrack = @TestVscrack,
-        TestPresionAceite = @TestPresionAceite, TestControlEstabilidad = @TestControlEstabilidad,
-        TestBolsasAire = @TestBolsasAire, TestBateria = @TestBateria, TestTemperatura = @TestTemperatura,
-        NivelGasolina = @NivelGasolina,
-        C5ExtLimpiaparabrisas = @C5ExtLimpiaparabrisas, C5ExtLuces = @C5ExtLuces, C5ExtAntena = @C5ExtAntena,
-        C5ExtEspejos = @C5ExtEspejos, C5ExtCristales = @C5ExtCristales, C5ExtTapones = @C5ExtTapones,
-        C5ExtMolduras = @C5ExtMolduras, C5ExtTaponGas = @C5ExtTaponGas, C5ExtClaxon = @C5ExtClaxon,
-        C5IntInstrumentos = @C5IntInstrumentos, C5IntCalefaccion = @C5IntCalefaccion, C5IntAire = @C5IntAire,
-        C5IntRadio = @C5IntRadio, C5IntBocinas = @C5IntBocinas, C5IntEncendedor = @C5IntEncendedor,
-        C5IntEspejoRet = @C5IntEspejoRet, C5IntCeniceros = @C5IntCeniceros, C5IntCinturones = @C5IntCinturones,
-        C5IntTapetes = @C5IntTapetes, C5IntManijas = @C5IntManijas, C5IntEquipoAd = @C5IntEquipoAd,
-        C5IntAccesorios = @C5IntAccesorios, C5IntAditamentos = @C5IntAditamentos, C5IntOtros = @C5IntOtros,
-        SinGarantia = @SinGarantia, ConGarantia = @ConGarantia,
-        FirmaDistribuidor = @FirmaDistribuidor, FirmaCliente = @FirmaCliente, FirmaExtra = @FirmaExtra,
-        PartesEntregaSi = @PartesEntregaSi, PartesEntregaNo = @PartesEntregaNo,
-        PartesGarantia = @PartesGarantia, PartesResiduos = @PartesResiduos,
-        ServicioDomicilioSi = @ServicioDomicilioSi, ServicioDomicilioNo = @ServicioDomicilioNo,
-        PolizaSeguros = @PolizaSeguros, PolizaNoSeguros = @PolizaNoSeguros,
-        DeseaContacto = @DeseaContacto,
-        Anticipo = @Anticipo, Conductor = @Conductor, MedioContacto = @MedioContacto,
-        TelContacto = @TelContacto, FechaDofu = @FechaDofu, Katashiki = @Katashiki,
-        SharePointUniqueId = @SharePointUniqueId
-    WHERE IdVenta = @IdVenta
-ELSE
-    INSERT INTO ContratoServicioFirma (
-        IdVenta,
-        InvTapetes, InvCeniceros, InvBocinas, InvInstrumentos, InvEncendedores, InvRadio,
-        InvClaxon, InvAC, InvRetrovisor, InvManijas, InvVestiduras, InvCinturones,
-        InvManualProp, InvCarnetServicio,
-        InvTarjetaCirculacion, InvPolizaSeguro, InvVerificacion, InvAlfombradoCaj,
-        InvLlantaRefaccion, InvTriangulos, InvExtintor, InvCablesBateria,
-        InvGato, InvHerramientas, InvBotiquin, InvRedProtectora, InvBirloSeguridad,
-        ExtCristales, ExtLimpiadores, ExtTapones, ExtFarosNiebla, ExtAntena, ExtTaponGas,
-        ExtMolduras, ExtEspejos, ExtFarosDelanteros, ExtLucesTraseras, ExtGolpes,
-        TestLlantas, TestCheckEngine, TestVscrack, TestPresionAceite, TestControlEstabilidad,
-        TestBolsasAire, TestBateria, TestTemperatura,
-        NivelGasolina,
-        C5ExtLimpiaparabrisas, C5ExtLuces, C5ExtAntena, C5ExtEspejos, C5ExtCristales,
-        C5ExtTapones, C5ExtMolduras, C5ExtTaponGas, C5ExtClaxon,
-        C5IntInstrumentos, C5IntCalefaccion, C5IntAire, C5IntRadio, C5IntBocinas,
-        C5IntEncendedor, C5IntEspejoRet, C5IntCeniceros, C5IntCinturones, C5IntTapetes,
-        C5IntManijas, C5IntEquipoAd, C5IntAccesorios, C5IntAditamentos, C5IntOtros,
-        SinGarantia, ConGarantia,
-        FirmaDistribuidor, FirmaCliente, FirmaExtra,
-        PartesEntregaSi, PartesEntregaNo, PartesGarantia, PartesResiduos,
-        ServicioDomicilioSi, ServicioDomicilioNo, PolizaSeguros, PolizaNoSeguros,
-        DeseaContacto,
-        Anticipo, Conductor, MedioContacto, TelContacto, FechaDofu, Katashiki, SharePointUniqueId
-    ) VALUES (
-        @IdVenta,
-        @InvTapetes, @InvCeniceros, @InvBocinas, @InvInstrumentos, @InvEncendedores, @InvRadio,
-        @InvClaxon, @InvAC, @InvRetrovisor, @InvManijas, @InvVestiduras, @InvCinturones,
-        @InvManualProp, @InvCarnetServicio,
-        @InvTarjetaCirculacion, @InvPolizaSeguro, @InvVerificacion, @InvAlfombradoCaj,
-        @InvLlantaRefaccion, @InvTriangulos, @InvExtintor, @InvCablesBateria,
-        @InvGato, @InvHerramientas, @InvBotiquin, @InvRedProtectora, @InvBirloSeguridad,
-        @ExtCristales, @ExtLimpiadores, @ExtTapones, @ExtFarosNiebla, @ExtAntena, @ExtTaponGas,
-        @ExtMolduras, @ExtEspejos, @ExtFarosDelanteros, @ExtLucesTraseras, @ExtGolpes,
-        @TestLlantas, @TestCheckEngine, @TestVscrack, @TestPresionAceite, @TestControlEstabilidad,
-        @TestBolsasAire, @TestBateria, @TestTemperatura,
-        @NivelGasolina,
-        @C5ExtLimpiaparabrisas, @C5ExtLuces, @C5ExtAntena, @C5ExtEspejos, @C5ExtCristales,
-        @C5ExtTapones, @C5ExtMolduras, @C5ExtTaponGas, @C5ExtClaxon,
-        @C5IntInstrumentos, @C5IntCalefaccion, @C5IntAire, @C5IntRadio, @C5IntBocinas,
-        @C5IntEncendedor, @C5IntEspejoRet, @C5IntCeniceros, @C5IntCinturones, @C5IntTapetes,
-        @C5IntManijas, @C5IntEquipoAd, @C5IntAccesorios, @C5IntAditamentos, @C5IntOtros,
-        @SinGarantia, @ConGarantia,
-        @FirmaDistribuidor, @FirmaCliente, @FirmaExtra,
-        @PartesEntregaSi, @PartesEntregaNo, @PartesGarantia, @PartesResiduos,
-        @ServicioDomicilioSi, @ServicioDomicilioNo, @PolizaSeguros, @PolizaNoSeguros,
-        @DeseaContacto,
-        @Anticipo, @Conductor, @MedioContacto, @TelContacto, @FechaDofu, @Katashiki, @SharePointUniqueId
-    )";
-
+            IF EXISTS (SELECT 1 FROM ContratoServicioFirma WHERE IdVenta = @IdVenta)
+                UPDATE ContratoServicioFirma SET
+                    InvTapetes = @InvTapetes, InvCeniceros = @InvCeniceros, InvBocinas = @InvBocinas,
+                    InvInstrumentos = @InvInstrumentos, InvEncendedores = @InvEncendedores, InvRadio = @InvRadio,
+                    InvClaxon = @InvClaxon, InvAC = @InvAC, InvRetrovisor = @InvRetrovisor,
+                    InvManijas = @InvManijas, InvVestiduras = @InvVestiduras, InvCinturones = @InvCinturones,
+                    InvManualProp = @InvManualProp, InvCarnetServicio = @InvCarnetServicio,
+                    InvTarjetaCirculacion = @InvTarjetaCirculacion, InvPolizaSeguro = @InvPolizaSeguro,
+                    InvVerificacion = @InvVerificacion, InvAlfombradoCaj = @InvAlfombradoCaj,
+                    InvLlantaRefaccion = @InvLlantaRefaccion, InvTriangulos = @InvTriangulos,
+                    InvExtintor = @InvExtintor, InvCablesBateria = @InvCablesBateria,
+                    InvGato = @InvGato, InvHerramientas = @InvHerramientas, InvBotiquin = @InvBotiquin,
+                    InvRedProtectora = @InvRedProtectora, InvBirloSeguridad = @InvBirloSeguridad,
+                    ExtCristales = @ExtCristales, ExtLimpiadores = @ExtLimpiadores, ExtTapones = @ExtTapones,
+                    ExtFarosNiebla = @ExtFarosNiebla, ExtAntena = @ExtAntena, ExtTaponGas = @ExtTaponGas,
+                    ExtMolduras = @ExtMolduras, ExtEspejos = @ExtEspejos, ExtFarosDelanteros = @ExtFarosDelanteros,
+                    ExtLucesTraseras = @ExtLucesTraseras, ExtGolpes = @ExtGolpes,
+                    TestLlantas = @TestLlantas, TestCheckEngine = @TestCheckEngine, TestVscrack = @TestVscrack,
+                    TestPresionAceite = @TestPresionAceite, TestControlEstabilidad = @TestControlEstabilidad,
+                    TestBolsasAire = @TestBolsasAire, TestBateria = @TestBateria, TestTemperatura = @TestTemperatura,
+                    NivelGasolina = @NivelGasolina,
+                    C5ExtLimpiaparabrisas = @C5ExtLimpiaparabrisas, C5ExtLuces = @C5ExtLuces, C5ExtAntena = @C5ExtAntena,
+                    C5ExtEspejos = @C5ExtEspejos, C5ExtCristales = @C5ExtCristales, C5ExtTapones = @C5ExtTapones,
+                    C5ExtMolduras = @C5ExtMolduras, C5ExtTaponGas = @C5ExtTaponGas, C5ExtClaxon = @C5ExtClaxon,
+                    C5IntInstrumentos = @C5IntInstrumentos, C5IntCalefaccion = @C5IntCalefaccion, C5IntAire = @C5IntAire,
+                    C5IntRadio = @C5IntRadio, C5IntBocinas = @C5IntBocinas, C5IntEncendedor = @C5IntEncendedor,
+                    C5IntEspejoRet = @C5IntEspejoRet, C5IntCeniceros = @C5IntCeniceros, C5IntCinturones = @C5IntCinturones,
+                    C5IntTapetes = @C5IntTapetes, C5IntManijas = @C5IntManijas, C5IntEquipoAd = @C5IntEquipoAd,
+                    C5IntAccesorios = @C5IntAccesorios, C5IntAditamentos = @C5IntAditamentos, C5IntOtros = @C5IntOtros,
+                    SinGarantia = @SinGarantia, ConGarantia = @ConGarantia,
+                    FirmaDistribuidor = @FirmaDistribuidor, FirmaCliente = @FirmaCliente, FirmaExtra = @FirmaExtra,
+                    PartesEntregaSi = @PartesEntregaSi, PartesEntregaNo = @PartesEntregaNo,
+                    PartesGarantia = @PartesGarantia, PartesResiduos = @PartesResiduos,
+                    ServicioDomicilioSi = @ServicioDomicilioSi, ServicioDomicilioNo = @ServicioDomicilioNo,
+                    PolizaSeguros = @PolizaSeguros, PolizaNoSeguros = @PolizaNoSeguros,
+                    DeseaContacto = @DeseaContacto,
+                    Anticipo = @Anticipo, Conductor = @Conductor, MedioContacto = @MedioContacto,
+                    TelContacto = @TelContacto, FechaDofu = @FechaDofu, Katashiki = @Katashiki
+                WHERE IdVenta = @IdVenta
+            ELSE
+                INSERT INTO ContratoServicioFirma (
+                    IdVenta,
+                    InvTapetes, InvCeniceros, InvBocinas, InvInstrumentos, InvEncendedores, InvRadio,
+                    InvClaxon, InvAC, InvRetrovisor, InvManijas, InvVestiduras, InvCinturones,
+                    InvManualProp, InvCarnetServicio,
+                    InvTarjetaCirculacion, InvPolizaSeguro, InvVerificacion, InvAlfombradoCaj,
+                    InvLlantaRefaccion, InvTriangulos, InvExtintor, InvCablesBateria,
+                    InvGato, InvHerramientas, InvBotiquin, InvRedProtectora, InvBirloSeguridad,
+                    ExtCristales, ExtLimpiadores, ExtTapones, ExtFarosNiebla, ExtAntena, ExtTaponGas,
+                    ExtMolduras, ExtEspejos, ExtFarosDelanteros, ExtLucesTraseras, ExtGolpes,
+                    TestLlantas, TestCheckEngine, TestVscrack, TestPresionAceite, TestControlEstabilidad,
+                    TestBolsasAire, TestBateria, TestTemperatura,
+                    NivelGasolina,
+                    C5ExtLimpiaparabrisas, C5ExtLuces, C5ExtAntena, C5ExtEspejos, C5ExtCristales,
+                    C5ExtTapones, C5ExtMolduras, C5ExtTaponGas, C5ExtClaxon,
+                    C5IntInstrumentos, C5IntCalefaccion, C5IntAire, C5IntRadio, C5IntBocinas,
+                    C5IntEncendedor, C5IntEspejoRet, C5IntCeniceros, C5IntCinturones, C5IntTapetes,
+                    C5IntManijas, C5IntEquipoAd, C5IntAccesorios, C5IntAditamentos, C5IntOtros,
+                    SinGarantia, ConGarantia,
+                    FirmaDistribuidor, FirmaCliente, FirmaExtra,
+                    PartesEntregaSi, PartesEntregaNo, PartesGarantia, PartesResiduos,
+                    ServicioDomicilioSi, ServicioDomicilioNo, PolizaSeguros, PolizaNoSeguros,
+                    DeseaContacto,
+                    Anticipo, Conductor, MedioContacto, TelContacto, FechaDofu, Katashiki
+                ) VALUES (
+                    @IdVenta,
+                    @InvTapetes, @InvCeniceros, @InvBocinas, @InvInstrumentos, @InvEncendedores, @InvRadio,
+                    @InvClaxon, @InvAC, @InvRetrovisor, @InvManijas, @InvVestiduras, @InvCinturones,
+                    @InvManualProp, @InvCarnetServicio,
+                    @InvTarjetaCirculacion, @InvPolizaSeguro, @InvVerificacion, @InvAlfombradoCaj,
+                    @InvLlantaRefaccion, @InvTriangulos, @InvExtintor, @InvCablesBateria,
+                    @InvGato, @InvHerramientas, @InvBotiquin, @InvRedProtectora, @InvBirloSeguridad,
+                    @ExtCristales, @ExtLimpiadores, @ExtTapones, @ExtFarosNiebla, @ExtAntena, @ExtTaponGas,
+                    @ExtMolduras, @ExtEspejos, @ExtFarosDelanteros, @ExtLucesTraseras, @ExtGolpes,
+                    @TestLlantas, @TestCheckEngine, @TestVscrack, @TestPresionAceite, @TestControlEstabilidad,
+                    @TestBolsasAire, @TestBateria, @TestTemperatura,
+                    @NivelGasolina,
+                    @C5ExtLimpiaparabrisas, @C5ExtLuces, @C5ExtAntena, @C5ExtEspejos, @C5ExtCristales,
+                    @C5ExtTapones, @C5ExtMolduras, @C5ExtTaponGas, @C5ExtClaxon,
+                    @C5IntInstrumentos, @C5IntCalefaccion, @C5IntAire, @C5IntRadio, @C5IntBocinas,
+                    @C5IntEncendedor, @C5IntEspejoRet, @C5IntCeniceros, @C5IntCinturones, @C5IntTapetes,
+                    @C5IntManijas, @C5IntEquipoAd, @C5IntAccesorios, @C5IntAditamentos, @C5IntOtros,
+                    @SinGarantia, @ConGarantia,
+                    @FirmaDistribuidor, @FirmaCliente, @FirmaExtra,
+                    @PartesEntregaSi, @PartesEntregaNo, @PartesGarantia, @PartesResiduos,
+                    @ServicioDomicilioSi, @ServicioDomicilioNo, @PolizaSeguros, @PolizaNoSeguros,
+                    @DeseaContacto,
+                    @Anticipo, @Conductor, @MedioContacto, @TelContacto, @FechaDofu, @Katashiki
+                )";
             const string sqlDeleteDanos = @"
 DELETE FROM ContratoServicio_Dano WHERE IdVenta = @IdVenta";
 
@@ -386,6 +384,7 @@ INSERT INTO ContratoServicio_Dano (IdVenta, IdTipoDano, CoordX, CoordY)
 VALUES (@IdVenta, @IdTipoDano, @CoordX, @CoordY)";
 
             using var conn = _factory.Create(negocio);
+            conn.Open();
             using var tx = ((SqlConnection)conn).BeginTransaction();
 
             try
@@ -410,6 +409,17 @@ VALUES (@IdVenta, @IdTipoDano, @CoordX, @CoordY)";
                 tx.Rollback();
                 throw;
             }
+        }
+
+        public async Task<VentaMovDto?> ObtenerMovVentaAsync(string ventaId, int negocio)
+        {
+            if (!int.TryParse(ventaId, out int idVenta))
+                return null;
+
+            const string sql = "SELECT TOP 1 Mov, MovID AS MovId FROM Venta WHERE Id = @Id";
+
+            using var conn = _factory.Create(negocio);
+            return await conn.QueryFirstOrDefaultAsync<VentaMovDto>(sql, new { Id = idVenta });
         }
     }
 }

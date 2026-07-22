@@ -881,7 +881,6 @@
 
 <script>
     let ventaIdActual       = null;
-    let _sharePointUniqueId = null;
 
     const constantesSharePoint = { DRIVE_ID: '', ACCESS_TOKEN: '' };
 
@@ -1029,7 +1028,6 @@
         cargarImg('imgFirmaDistribuidor', 'firmaDistPlaceholder', dto.firmaDistribuidor);
         cargarImg('imgFirmaCliente',      'firmaCliPlaceholder',  dto.firmaCliente);
 
-        _sharePointUniqueId = dto.sharePointUniqueId ?? null;
     }
 
 
@@ -1083,7 +1081,6 @@
             idVenta:             parseInt(ventaIdActual),
             fechaEntrega:        document.getElementById('fechaEntrega')?.value || null,
             correoDistribuidora: 'atencionclientes@toyotaqueretaro.mx',
-            sharePointUniqueId:  _sharePointUniqueId,
             // Exteriores
             extLimpiaparabrisas: chk('chkExtLimpiaparabrisas'),
             extLuces:            chk('chkExtLuces'),
@@ -1216,8 +1213,20 @@
             const file = new File([blob], `ContratoSeminuevos_${ventaIdActual}_${Date.now()}.pdf`, { type: 'application/pdf' });
             const resultado = await sharePointService.uploadFile(file, 'Contratos/Seminuevos');
 
-            _sharePointUniqueId = resultado.uniqueId;
-            await guardarContrato();
+            // ══════════════════ BLOQUE QUE FALTABA ══════════════════
+            await fetch('/ContratoSeminuevos/GuardarDocumentoOper', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({
+                    idVenta:      parseInt(ventaIdActual),
+                    archivo:      resultado.nombre,
+                    url:          resultado.url,
+                    idSharePoint: resultado.uniqueId,
+                    mimeType:     'pdf',
+                    tamano:       resultado.tamano
+                })
+            });
+            // ══════════════════════════════════════════════════════
 
             resultEl.className = 'mt-2';
             resultEl.innerHTML = `
@@ -1292,7 +1301,6 @@
         document.getElementById('busquedaPanel').classList.remove('d-none');
         document.getElementById('inputVentaId').value = '';
         document.getElementById('busquedaError').classList.add('d-none');
-        _sharePointUniqueId = null;
     }
 
     function mostrarError(msg) {

@@ -1089,7 +1089,26 @@
 
             const resultado = await sharePointService.uploadFile(file, 'Contratos/Nuevos');
 
-            // ── Guardar UniqueId y persistir ───────────────────
+            // ══════════════════ AQUÍ VA EL BLOQUE NUEVO ══════════════════
+            // ── Guardar metadata del documento en el nuevo modelo (tablas Oper) ──
+            await fetch('/ContratoNuevos/GuardarDocumentoOper', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    idVenta:      parseInt(ventaIdActual),
+                    archivo:      resultado.nombre,
+                    url:          resultado.url,
+                    idSharePoint: resultado.uniqueId,
+                    mimeType:     'pdf',
+                    tamano:       resultado.tamano
+                })
+            });
+            // ═══════════════════════════════════════════════════════════
+
+            // ── Guardar UniqueId y persistir (flujo viejo, sigue igual) ──
             _sharePointUniqueId = resultado.uniqueId;
             await guardarContrato();
 

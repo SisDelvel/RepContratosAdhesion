@@ -7,8 +7,9 @@ namespace Contratos_Adhesion.Services
 {
     public interface IRepositorioContratoSeminuevos
     {
-        Task<ContratoSeminuevoDto?> ObtenerDatosContratoSeminuevoAsync(string ventaId, int negocio); // ← negocio
-        Task GuardarContratoAsync(GuardarContratoSeminuevoDto dto, int negocio);                     // ← negocio
+        Task<ContratoSeminuevoDto?> ObtenerDatosContratoSeminuevoAsync(string ventaId, int negocio);
+        Task GuardarContratoAsync(GuardarContratoSeminuevoDto dto, int negocio);
+        Task<VentaMovDto?> ObtenerMovVentaAsync(string ventaId, int negocio);
     }
 
     public class RepositorioContratoSeminuevos : IRepositorioContratoSeminuevos
@@ -154,26 +155,24 @@ INNER JOIN Vin vi ON vi.Vin = ve.CambioVin
 WHERE ve.Vin = (SELECT ServicioSerie FROM Venta WHERE Id = @VentaId)";
 
             const string sqlFirmas = @"
-    SELECT
-        CONVERT(varchar(10), FechaEntrega, 23) AS FechaEntrega,
-        CorreoDistribuidora,
-        ExtLimpiaparabrisas, ExtLuces, ExtAntena, ExtEspejosLat, ExtCristales,
-        ExtTapones, ExtMolduras, ExtTaponGas, ExtClaxon,
-        IntInstrumentos, IntCalefaccion, IntAire, IntRadio, IntBocinas,
-        IntEncendedor, IntEspejoRet, IntCeniceros, IntCinturones, IntTapetes,
-        IntManijas, IntEquipoAd, IntAccesorios, IntOtros,
-        MecLlantas, MecRuedas, MecRines, MecEscape, MecDireccion,
-        MecSuspension, MecFrenos, MecParabrisas, MecCarroceria,
-        Doc7Factura, Doc7Tarjeta, Doc7DocsOficiales, Doc7Manual,
-        Doc7Tenencias, Doc7Verificacion, Doc7Multas,
-        SinGarantia, ConGarantia,
-        Doc10Factura, Doc10DocsOficiales, Doc10Constancia, Doc10Tenencias,
-        Doc10Verificacion, Doc10Multas, Doc10Manual,
-        FirmaDistribuidor, FirmaCliente,
-        SharePointUniqueId
-    FROM ContratoSeminuevoFirma
-    WHERE IdVenta = @VentaId";
-
+            SELECT
+                CONVERT(varchar(10), FechaEntrega, 23) AS FechaEntrega,
+                CorreoDistribuidora,
+                ExtLimpiaparabrisas, ExtLuces, ExtAntena, ExtEspejosLat, ExtCristales,
+                ExtTapones, ExtMolduras, ExtTaponGas, ExtClaxon,
+                IntInstrumentos, IntCalefaccion, IntAire, IntRadio, IntBocinas,
+                IntEncendedor, IntEspejoRet, IntCeniceros, IntCinturones, IntTapetes,
+                IntManijas, IntEquipoAd, IntAccesorios, IntOtros,
+                MecLlantas, MecRuedas, MecRines, MecEscape, MecDireccion,
+                MecSuspension, MecFrenos, MecParabrisas, MecCarroceria,
+                Doc7Factura, Doc7Tarjeta, Doc7DocsOficiales, Doc7Manual,
+                Doc7Tenencias, Doc7Verificacion, Doc7Multas,
+                SinGarantia, ConGarantia,
+                Doc10Factura, Doc10DocsOficiales, Doc10Constancia, Doc10Tenencias,
+                Doc10Verificacion, Doc10Multas, Doc10Manual,
+                FirmaDistribuidor, FirmaCliente
+            FROM ContratoSeminuevoFirma
+            WHERE IdVenta = @VentaId";
             using var conn = _factory.Create(negocio); // ← único cambio aquí
 
             var dto = await conn.QueryFirstOrDefaultAsync<ContratoSeminuevoDto>(sqlPrincipal, new { VentaId = idVenta });
@@ -273,101 +272,111 @@ WHERE ve.Vin = (SELECT ServicioSerie FROM Venta WHERE Id = @VentaId)";
         public async Task GuardarContratoAsync(GuardarContratoSeminuevoDto dto, int negocio)
         {
             const string sql = @"
-IF EXISTS (SELECT 1 FROM ContratoSeminuevoFirma WHERE IdVenta = @IdVenta)
-    UPDATE ContratoSeminuevoFirma
-    SET
-        FechaEntrega        = @FechaEntrega,
-        CorreoDistribuidora = @CorreoDistribuidora,
-        ExtLimpiaparabrisas = @ExtLimpiaparabrisas,
-        ExtLuces            = @ExtLuces,
-        ExtAntena           = @ExtAntena,
-        ExtEspejosLat       = @ExtEspejosLat,
-        ExtCristales        = @ExtCristales,
-        ExtTapones          = @ExtTapones,
-        ExtMolduras         = @ExtMolduras,
-        ExtTaponGas         = @ExtTaponGas,
-        ExtClaxon           = @ExtClaxon,
-        IntInstrumentos     = @IntInstrumentos,
-        IntCalefaccion      = @IntCalefaccion,
-        IntAire             = @IntAire,
-        IntRadio            = @IntRadio,
-        IntBocinas          = @IntBocinas,
-        IntEncendedor       = @IntEncendedor,
-        IntEspejoRet        = @IntEspejoRet,
-        IntCeniceros        = @IntCeniceros,
-        IntCinturones       = @IntCinturones,
-        IntTapetes          = @IntTapetes,
-        IntManijas          = @IntManijas,
-        IntEquipoAd         = @IntEquipoAd,
-        IntAccesorios       = @IntAccesorios,
-        IntOtros            = @IntOtros,
-        MecLlantas          = @MecLlantas,
-        MecRuedas           = @MecRuedas,
-        MecRines            = @MecRines,
-        MecEscape           = @MecEscape,
-        MecDireccion        = @MecDireccion,
-        MecSuspension       = @MecSuspension,
-        MecFrenos           = @MecFrenos,
-        MecParabrisas       = @MecParabrisas,
-        MecCarroceria       = @MecCarroceria,
-        Doc7Factura         = @Doc7Factura,
-        Doc7Tarjeta         = @Doc7Tarjeta,
-        Doc7DocsOficiales   = @Doc7DocsOficiales,
-        Doc7Manual          = @Doc7Manual,
-        Doc7Tenencias       = @Doc7Tenencias,
-        Doc7Verificacion    = @Doc7Verificacion,
-        Doc7Multas          = @Doc7Multas,
-        SinGarantia         = @SinGarantia,
-        ConGarantia         = @ConGarantia,
-        Doc10Factura        = @Doc10Factura,
-        Doc10DocsOficiales  = @Doc10DocsOficiales,
-        Doc10Constancia     = @Doc10Constancia,
-        Doc10Tenencias      = @Doc10Tenencias,
-        Doc10Verificacion   = @Doc10Verificacion,
-        Doc10Multas         = @Doc10Multas,
-        Doc10Manual         = @Doc10Manual,
-        FirmaDistribuidor   = @FirmaDistribuidor,
-        FirmaCliente        = @FirmaCliente,
-        SharePointUniqueId  = @SharePointUniqueId
-    WHERE IdVenta = @IdVenta
-ELSE
-    INSERT INTO ContratoSeminuevoFirma
-    (
-        IdVenta, FechaEntrega, CorreoDistribuidora,
-        ExtLimpiaparabrisas, ExtLuces, ExtAntena, ExtEspejosLat, ExtCristales,
-        ExtTapones, ExtMolduras, ExtTaponGas, ExtClaxon,
-        IntInstrumentos, IntCalefaccion, IntAire, IntRadio, IntBocinas,
-        IntEncendedor, IntEspejoRet, IntCeniceros, IntCinturones, IntTapetes,
-        IntManijas, IntEquipoAd, IntAccesorios, IntOtros,
-        MecLlantas, MecRuedas, MecRines, MecEscape, MecDireccion,
-        MecSuspension, MecFrenos, MecParabrisas, MecCarroceria,
-        Doc7Factura, Doc7Tarjeta, Doc7DocsOficiales, Doc7Manual,
-        Doc7Tenencias, Doc7Verificacion, Doc7Multas,
-        SinGarantia, ConGarantia,
-        Doc10Factura, Doc10DocsOficiales, Doc10Constancia, Doc10Tenencias,
-        Doc10Verificacion, Doc10Multas, Doc10Manual,
-        FirmaDistribuidor, FirmaCliente, SharePointUniqueId
-    )
-    VALUES
-    (
-        @IdVenta, @FechaEntrega, @CorreoDistribuidora,
-        @ExtLimpiaparabrisas, @ExtLuces, @ExtAntena, @ExtEspejosLat, @ExtCristales,
-        @ExtTapones, @ExtMolduras, @ExtTaponGas, @ExtClaxon,
-        @IntInstrumentos, @IntCalefaccion, @IntAire, @IntRadio, @IntBocinas,
-        @IntEncendedor, @IntEspejoRet, @IntCeniceros, @IntCinturones, @IntTapetes,
-        @IntManijas, @IntEquipoAd, @IntAccesorios, @IntOtros,
-        @MecLlantas, @MecRuedas, @MecRines, @MecEscape, @MecDireccion,
-        @MecSuspension, @MecFrenos, @MecParabrisas, @MecCarroceria,
-        @Doc7Factura, @Doc7Tarjeta, @Doc7DocsOficiales, @Doc7Manual,
-        @Doc7Tenencias, @Doc7Verificacion, @Doc7Multas,
-        @SinGarantia, @ConGarantia,
-        @Doc10Factura, @Doc10DocsOficiales, @Doc10Constancia, @Doc10Tenencias,
-        @Doc10Verificacion, @Doc10Multas, @Doc10Manual,
-        @FirmaDistribuidor, @FirmaCliente, @SharePointUniqueId
-    )";
+            IF EXISTS (SELECT 1 FROM ContratoSeminuevoFirma WHERE IdVenta = @IdVenta)
+                UPDATE ContratoSeminuevoFirma
+                SET
+                    FechaEntrega        = @FechaEntrega,
+                    CorreoDistribuidora = @CorreoDistribuidora,
+                    ExtLimpiaparabrisas = @ExtLimpiaparabrisas,
+                    ExtLuces            = @ExtLuces,
+                    ExtAntena           = @ExtAntena,
+                    ExtEspejosLat       = @ExtEspejosLat,
+                    ExtCristales        = @ExtCristales,
+                    ExtTapones          = @ExtTapones,
+                    ExtMolduras         = @ExtMolduras,
+                    ExtTaponGas         = @ExtTaponGas,
+                    ExtClaxon           = @ExtClaxon,
+                    IntInstrumentos     = @IntInstrumentos,
+                    IntCalefaccion      = @IntCalefaccion,
+                    IntAire             = @IntAire,
+                    IntRadio            = @IntRadio,
+                    IntBocinas          = @IntBocinas,
+                    IntEncendedor       = @IntEncendedor,
+                    IntEspejoRet        = @IntEspejoRet,
+                    IntCeniceros        = @IntCeniceros,
+                    IntCinturones       = @IntCinturones,
+                    IntTapetes          = @IntTapetes,
+                    IntManijas          = @IntManijas,
+                    IntEquipoAd         = @IntEquipoAd,
+                    IntAccesorios       = @IntAccesorios,
+                    IntOtros            = @IntOtros,
+                    MecLlantas          = @MecLlantas,
+                    MecRuedas           = @MecRuedas,
+                    MecRines            = @MecRines,
+                    MecEscape           = @MecEscape,
+                    MecDireccion        = @MecDireccion,
+                    MecSuspension       = @MecSuspension,
+                    MecFrenos           = @MecFrenos,
+                    MecParabrisas       = @MecParabrisas,
+                    MecCarroceria       = @MecCarroceria,
+                    Doc7Factura         = @Doc7Factura,
+                    Doc7Tarjeta         = @Doc7Tarjeta,
+                    Doc7DocsOficiales   = @Doc7DocsOficiales,
+                    Doc7Manual          = @Doc7Manual,
+                    Doc7Tenencias       = @Doc7Tenencias,
+                    Doc7Verificacion    = @Doc7Verificacion,
+                    Doc7Multas          = @Doc7Multas,
+                    SinGarantia         = @SinGarantia,
+                    ConGarantia         = @ConGarantia,
+                    Doc10Factura        = @Doc10Factura,
+                    Doc10DocsOficiales  = @Doc10DocsOficiales,
+                    Doc10Constancia     = @Doc10Constancia,
+                    Doc10Tenencias      = @Doc10Tenencias,
+                    Doc10Verificacion   = @Doc10Verificacion,
+                    Doc10Multas         = @Doc10Multas,
+                    Doc10Manual         = @Doc10Manual,
+                    FirmaDistribuidor   = @FirmaDistribuidor,
+                    FirmaCliente        = @FirmaCliente
+                WHERE IdVenta = @IdVenta
+            ELSE
+                INSERT INTO ContratoSeminuevoFirma
+                (
+                    IdVenta, FechaEntrega, CorreoDistribuidora,
+                    ExtLimpiaparabrisas, ExtLuces, ExtAntena, ExtEspejosLat, ExtCristales,
+                    ExtTapones, ExtMolduras, ExtTaponGas, ExtClaxon,
+                    IntInstrumentos, IntCalefaccion, IntAire, IntRadio, IntBocinas,
+                    IntEncendedor, IntEspejoRet, IntCeniceros, IntCinturones, IntTapetes,
+                    IntManijas, IntEquipoAd, IntAccesorios, IntOtros,
+                    MecLlantas, MecRuedas, MecRines, MecEscape, MecDireccion,
+                    MecSuspension, MecFrenos, MecParabrisas, MecCarroceria,
+                    Doc7Factura, Doc7Tarjeta, Doc7DocsOficiales, Doc7Manual,
+                    Doc7Tenencias, Doc7Verificacion, Doc7Multas,
+                    SinGarantia, ConGarantia,
+                    Doc10Factura, Doc10DocsOficiales, Doc10Constancia, Doc10Tenencias,
+                    Doc10Verificacion, Doc10Multas, Doc10Manual,
+                    FirmaDistribuidor, FirmaCliente
+                )
+                VALUES
+                (
+                    @IdVenta, @FechaEntrega, @CorreoDistribuidora,
+                    @ExtLimpiaparabrisas, @ExtLuces, @ExtAntena, @ExtEspejosLat, @ExtCristales,
+                    @ExtTapones, @ExtMolduras, @ExtTaponGas, @ExtClaxon,
+                    @IntInstrumentos, @IntCalefaccion, @IntAire, @IntRadio, @IntBocinas,
+                    @IntEncendedor, @IntEspejoRet, @IntCeniceros, @IntCinturones, @IntTapetes,
+                    @IntManijas, @IntEquipoAd, @IntAccesorios, @IntOtros,
+                    @MecLlantas, @MecRuedas, @MecRines, @MecEscape, @MecDireccion,
+                    @MecSuspension, @MecFrenos, @MecParabrisas, @MecCarroceria,
+                    @Doc7Factura, @Doc7Tarjeta, @Doc7DocsOficiales, @Doc7Manual,
+                    @Doc7Tenencias, @Doc7Verificacion, @Doc7Multas,
+                    @SinGarantia, @ConGarantia,
+                    @Doc10Factura, @Doc10DocsOficiales, @Doc10Constancia, @Doc10Tenencias,
+                    @Doc10Verificacion, @Doc10Multas, @Doc10Manual,
+                    @FirmaDistribuidor, @FirmaCliente
+                )";
 
             using var conn = _factory.Create(negocio); // ← único cambio aquí
             await conn.ExecuteAsync(sql, dto);
+        }
+
+        public async Task<VentaMovDto?> ObtenerMovVentaAsync(string ventaId, int negocio)
+        {
+            if (!int.TryParse(ventaId, out int idVenta))
+                return null;
+
+            const string sql = "SELECT TOP 1 Mov, MovID AS MovId FROM Venta WHERE Id = @Id";
+
+            using var conn = _factory.Create(negocio);
+            return await conn.QueryFirstOrDefaultAsync<VentaMovDto>(sql, new { Id = idVenta });
         }
     }
 }
