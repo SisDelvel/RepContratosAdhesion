@@ -1743,7 +1743,12 @@
     let firmaActual  = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-            initFirmaModal();
+        initFirmaModal();
+
+        const vehicleCanvas = document.getElementById('vehicleCanvas');
+        if (vehicleCanvas) {
+            vehicleCanvas.addEventListener('click', handleCanvasClick);
+        }
 
         const params = new URLSearchParams(window.location.search);
         const idServicio = params.get('idServicio');
