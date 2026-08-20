@@ -73,6 +73,11 @@ namespace Contratos_Adhesion.Controllers
                 return NotFound(new { mensaje = $"La venta con ID {ventaId} no existe." });
             QuestPDF.Settings.License = LicenseType.Community;
 
+            // ← nuevo: resolución del logo por negocio
+            var wwwroot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var logoPath = Path.Combine(wwwroot, "imagenes", ObtenerNombreLogo(negocio));
+            var logoBytes = System.IO.File.Exists(logoPath) ? System.IO.File.ReadAllBytes(logoPath) : null;
+
             var pdf = QuestPDF.Fluent.Document.Create(container =>
             {
                 container.Page(page =>
@@ -87,9 +92,15 @@ namespace Contratos_Adhesion.Controllers
                         // PÁGINA 1
                         // ════════════════════════════════════════════════════
 
-                        // ── Header: Distribuidora | Folio/Fecha | Localidad ──
+                        // ── Header: Logo | Distribuidora | Folio/Fecha | Localidad ──
                         col.Item().Row(row =>
                         {
+                            row.ConstantItem(80).Column(c => // ← nuevo
+                            {
+                                if (logoBytes != null) c.Item().Image(logoBytes).FitArea();
+                            });
+                            row.ConstantItem(8); // ← nuevo
+
                             row.RelativeItem(3).Column(c =>
                             {
                                 c.Item().Text($"Denominacion: {dto.Denominacion ?? "GEISHA QUERÉTARO, S. DE R.L. DE C.V"}").Bold();
@@ -648,6 +659,16 @@ namespace Contratos_Adhesion.Controllers
                 return StatusCode(500, new { mensaje = "Error al guardar el documento.", detalle = ex.Message });
             }
         }
+
+        private static string ObtenerNombreLogo(int negocio) => negocio switch
+        {
+            1 => "Toyota.jpg",    // Toque
+            2 => "KIA2.png",      // Kique
+            3 => "RENAULT.png",   // Reque
+            4 => "NISSAN.png",    // Nicui
+            5 => "NISSAN.png",    // Nivil
+            _ => "Toyota.jpg"
+        };
 
     }
 }

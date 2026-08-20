@@ -74,6 +74,11 @@ namespace Contratos_Adhesion.Controllers
 
                 QuestPDF.Settings.License = LicenseType.Community;
 
+                // ← nuevo: resolución del logo por negocio
+                var wwwroot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var logoPath = Path.Combine(wwwroot, "imagenes", ObtenerNombreLogo(negocio));
+                var logoBytes = System.IO.File.Exists(logoPath) ? System.IO.File.ReadAllBytes(logoPath) : null;
+
                 // Helper local para convertir base64 a bytes de imagen
                 static byte[]? Base64ToBytes(string? b64)
                 {
@@ -102,6 +107,12 @@ namespace Contratos_Adhesion.Controllers
                             // ── Header ───────────────────────────────────────────
                             col.Item().Row(row =>
                             {
+                                row.ConstantItem(80).Column(c => // ← nuevo
+                                {
+                                    if (logoBytes != null) c.Item().Image(logoBytes).FitArea();
+                                });
+                                row.ConstantItem(8); // ← nuevo
+
                                 row.RelativeItem(3).Column(c =>
                                 {
                                     c.Item().Text($"Denominacion: {dto.Denominacion}").Bold();
@@ -358,24 +369,24 @@ namespace Contratos_Adhesion.Controllers
 
                             var condiciones = new[]
                             {
-                                ("1.",  "En virtud de este contrato, el Distribuidor (Proveedor) como legítimo propietario vende al Cliente (Consumidor) el vehículo usado cuyas características se detallan en este contrato, lo que recibe después de haber efectuado una revisión de forma detallada, el cual cumple con las Normas Oficiales Mexicanas vigentes aplicables en materia de seguridad y protección al medio ambiente y que conforme las disposiciones aplicables, el Distribuidor y el vehículo usado cumplen con todas las especificaciones legales y comerciales para poder realizar la presente compraventa."),
-                                ("2.",  "Se proporcionará al cliente toda la información relativa a las restricciones que pudieran aplicar."),
-                                ("3.",  "El vehículo usado cuenta con el equipo opcional y accesorios adicionales solicitados y autorizados por el Cliente, detallados en el presente contrato."),
-                                ("4.",  "Las partes manifiestan que no se hará cargo alguno por servicios adicionales a los pactados en el presente instrumento, sin previo consentimiento del cliente."),
-                                ("5.",  "El precio total de la compraventa será cubierto en la fecha de firma del presente contrato, incluyendo, en su caso, los equipos y accesorios adicionales."),
-                                ("6.",  clausula6),
-                                ("7.",  clausula7),
-                                ("8.",  clausula8),
-                                ("9.",  "El Distribuidor cuenta con personal capacitado y responsable para atender dudas, aclaraciones, reclamaciones y servicios de orientación. Estos servicios se proporcionarán de manera gratuita en el domicilio, teléfonos y horarios de atención señalados en el rubro del presente contrato. Asimismo, cuenta con la capacidad, infraestructura, servicios y recursos necesarios para dar cabal cumplimiento a las obligaciones contenidas en el presente contrato."),
-                                ("10.", clausula10),
-                                ("11.", "El cliente podrá revocar su consentimiento, en un plazo de 5 días hábiles mediante aviso personal, correo electrónico o correo certificado, siempre y cuando no le haya sido entregado el vehículo materia del presente contrato."),
-                                ("12.", "Son causas de rescisión del presente contrato: (i) Que el Distribuidor incumpla con la entrega del vehículo en las condiciones pactadas en el presente contrato por causas imputables a él. -El Cliente le notificará por escrito el incumplimiento de dicha obligación y el Distribuidor devolverá las cantidades que por cualquier concepto hubiese recibido del Cliente con motivo de esta compraventa, en un plazo no mayor de 5 días hábiles a partir de la fecha en que fue notificado dicho incumplimiento, más la cantidad por concepto de pena convencional equivalente al 1% del precio total de venta del vehículo, en el que se incluye el IVA."),
-                                ("13.", "Las partes están de acuerdo en someterse a la competencia de la Procuraduría Federal del Consumidor en la vía administrativa para resolver cualquier controversia que se suscite sobre la interpretación o cumplimiento de los términos y condiciones del presente contrato y de las disposiciones de la Ley Federal de Protección al Consumidor, la Norma Oficial Mexicana NOM-122-SCFI-2010, Prácticas Comerciales-Elementos Normativos para la Comercialización y/o Consignación de Vehículos Usados y cualquier otra disposición aplicable, sin perjuicio del derecho que tienen las partes de someterse a la jurisdicción de los Tribunales competentes del domicilio del Distribuidor, renunciando las partes expresamente a cualquier otra jurisdicción que pudiera corresponderles por razón de sus domicilios futuros."),
-                                ("14.", "El Distribuidor se obliga, a no ceder o transmitir a terceros, con fines mercadotécnicos o publicitarios, los datos e información proporcionada por el cliente con motivo del presente contrato, no enviar publicidad sobre bienes y servicios, salvo autorización expresa del cliente en la presente cláusula ___."),
-                                ("15.", "El Cliente y el Distribuidor aceptan la realización de la presente compraventa en los términos establecidos en este contrato, y sabedores de su contenido legal, lo firman por duplicado."),
-                                ("16.", "Consentimiento por medios electrónicos. Las partes acuerdan que, en lugar de una firma original autógrafa, este contrato, así como cualquier otro consentimiento, aprobación u otros documentos relacionados con el mismo, podrán ser firmados por medio del uso de firmas electrónicas, digitales, numéricas, alfanuméricas, huellas de voz, biométricas o de cualquier otra forma y que dichos medios alternativos de firma y los registros en donde sean aplicadas dichas firmas, serán consideradas para todos los efectos, incluyendo pero no limitado a la legislación civil, mercantil, protección al consumidor y a la NOM-151-SCFI-2016, con la misma fuerza y consecuencia que la firma autógrafa original física de la parte firmante. Si el contrato o cualquier otro documento relacionado con el mismo es firmado por medios electrónicos o digitales, las Partes acuerdan que los formatos del contrato y los demás documentos firmados de tal modo serán conservados y estarán a disposición del consumidor, por lo que conviene que cada una y toda la información enviada por el Proveedor a la dirección de correo electrónico proporcionada por el Consumidor al momento de celebrar el presente Contrato será considerada como entregada en el momento en que la misma es enviada, siempre y cuando exista confirmación de recepción."),
-                                ("17.", "(*) El presente contrato fue registrado en la Procuraduría Federal del Consumidor bajo el número 9827-2023 de fecha 24 de noviembre de 2023. Cualquier variación del presente contrato en perjuicio del cliente, frente al contrato de adhesión registrado, se tendrá por no puesta."),
-                            };
+                        ("1.",  "En virtud de este contrato, el Distribuidor (Proveedor) como legítimo propietario vende al Cliente (Consumidor) el vehículo usado cuyas características se detallan en este contrato, lo que recibe después de haber efectuado una revisión de forma detallada, el cual cumple con las Normas Oficiales Mexicanas vigentes aplicables en materia de seguridad y protección al medio ambiente y que conforme las disposiciones aplicables, el Distribuidor y el vehículo usado cumplen con todas las especificaciones legales y comerciales para poder realizar la presente compraventa."),
+                        ("2.",  "Se proporcionará al cliente toda la información relativa a las restricciones que pudieran aplicar."),
+                        ("3.",  "El vehículo usado cuenta con el equipo opcional y accesorios adicionales solicitados y autorizados por el Cliente, detallados en el presente contrato."),
+                        ("4.",  "Las partes manifiestan que no se hará cargo alguno por servicios adicionales a los pactados en el presente instrumento, sin previo consentimiento del cliente."),
+                        ("5.",  "El precio total de la compraventa será cubierto en la fecha de firma del presente contrato, incluyendo, en su caso, los equipos y accesorios adicionales."),
+                        ("6.",  clausula6),
+                        ("7.",  clausula7),
+                        ("8.",  clausula8),
+                        ("9.",  "El Distribuidor cuenta con personal capacitado y responsable para atender dudas, aclaraciones, reclamaciones y servicios de orientación. Estos servicios se proporcionarán de manera gratuita en el domicilio, teléfonos y horarios de atención señalados en el rubro del presente contrato. Asimismo, cuenta con la capacidad, infraestructura, servicios y recursos necesarios para dar cabal cumplimiento a las obligaciones contenidas en el presente contrato."),
+                        ("10.", clausula10),
+                        ("11.", "El cliente podrá revocar su consentimiento, en un plazo de 5 días hábiles mediante aviso personal, correo electrónico o correo certificado, siempre y cuando no le haya sido entregado el vehículo materia del presente contrato."),
+                        ("12.", "Son causas de rescisión del presente contrato: (i) Que el Distribuidor incumpla con la entrega del vehículo en las condiciones pactadas en el presente contrato por causas imputables a él. -El Cliente le notificará por escrito el incumplimiento de dicha obligación y el Distribuidor devolverá las cantidades que por cualquier concepto hubiese recibido del Cliente con motivo de esta compraventa, en un plazo no mayor de 5 días hábiles a partir de la fecha en que fue notificado dicho incumplimiento, más la cantidad por concepto de pena convencional equivalente al 1% del precio total de venta del vehículo, en el que se incluye el IVA."),
+                        ("13.", "Las partes están de acuerdo en someterse a la competencia de la Procuraduría Federal del Consumidor en la vía administrativa para resolver cualquier controversia que se suscite sobre la interpretación o cumplimiento de los términos y condiciones del presente contrato y de las disposiciones de la Ley Federal de Protección al Consumidor, la Norma Oficial Mexicana NOM-122-SCFI-2010, Prácticas Comerciales-Elementos Normativos para la Comercialización y/o Consignación de Vehículos Usados y cualquier otra disposición aplicable, sin perjuicio del derecho que tienen las partes de someterse a la jurisdicción de los Tribunales competentes del domicilio del Distribuidor, renunciando las partes expresamente a cualquier otra jurisdicción que pudiera corresponderles por razón de sus domicilios futuros."),
+                        ("14.", "El Distribuidor se obliga, a no ceder o transmitir a terceros, con fines mercadotécnicos o publicitarios, los datos e información proporcionada por el cliente con motivo del presente contrato, no enviar publicidad sobre bienes y servicios, salvo autorización expresa del cliente en la presente cláusula ___."),
+                        ("15.", "El Cliente y el Distribuidor aceptan la realización de la presente compraventa en los términos establecidos en este contrato, y sabedores de su contenido legal, lo firman por duplicado."),
+                        ("16.", "Consentimiento por medios electrónicos. Las partes acuerdan que, en lugar de una firma original autógrafa, este contrato, así como cualquier otro consentimiento, aprobación u otros documentos relacionados con el mismo, podrán ser firmados por medio del uso de firmas electrónicas, digitales, numéricas, alfanuméricas, huellas de voz, biométricas o de cualquier otra forma y que dichos medios alternativos de firma y los registros en donde sean aplicadas dichas firmas, serán consideradas para todos los efectos, incluyendo pero no limitado a la legislación civil, mercantil, protección al consumidor y a la NOM-151-SCFI-2016, con la misma fuerza y consecuencia que la firma autógrafa original física de la parte firmante. Si el contrato o cualquier otro documento relacionado con el mismo es firmado por medios electrónicos o digitales, las Partes acuerdan que los formatos del contrato y los demás documentos firmados de tal modo serán conservados y estarán a disposición del consumidor, por lo que conviene que cada una y toda la información enviada por el Proveedor a la dirección de correo electrónico proporcionada por el Consumidor al momento de celebrar el presente Contrato será considerada como entregada en el momento en que la misma es enviada, siempre y cuando exista confirmación de recepción."),
+                        ("17.", "(*) El presente contrato fue registrado en la Procuraduría Federal del Consumidor bajo el número 9827-2023 de fecha 24 de noviembre de 2023. Cualquier variación del presente contrato en perjuicio del cliente, frente al contrato de adhesión registrado, se tendrá por no puesta."),
+                    };
 
                             col.Item().Column(c =>
                             {
@@ -431,6 +442,7 @@ namespace Contratos_Adhesion.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         // ─────────────────────────────────────────────────────────────────────────────
         // Helpers privados
         // ─────────────────────────────────────────────────────────────────────────────
@@ -506,5 +518,15 @@ namespace Contratos_Adhesion.Controllers
                 return StatusCode(500, new { mensaje = "Error al guardar el documento.", detalle = ex.Message });
             }
         }
+
+        private static string ObtenerNombreLogo(int negocio) => negocio switch
+        {
+            1 => "Toyota.jpg",    // Toque
+            2 => "KIA2.png",      // Kique
+            3 => "RENAULT.png",   // Reque
+            4 => "NISSAN.png",    // Nicui
+            5 => "NISSAN.png",    // Nivil
+            _ => "Toyota.jpg"
+        };
     }
 }
